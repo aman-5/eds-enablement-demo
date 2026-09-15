@@ -1,0 +1,41 @@
+.breadcrumb {
+  display: inline-block;
+  list-style: none;
+  padding: 0;
+  font-size: 14px;
+}
+
+.breadcrumb ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.breadcrumb li {
+  display: inline-block;
+  padding: 10px 5px;
+  text-transform: uppercase;
+}
+
+.breadcrumb li a {
+  color: #202020;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.breadcrumb li:first-child {
+  padding-left: 0;
+}
+
+.breadcrumb li::before {
+  font-family: arial, sans-serif;
+  font-size: 14px;
+  line-height: 1;
+  content: "▶";
+  color: #ffea00;
+  padding-right: 5px;
+}
+
+.breadcrumb li:first-child::before {
+  content: none;
+}
