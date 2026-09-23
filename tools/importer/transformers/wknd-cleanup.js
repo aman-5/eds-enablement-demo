@@ -58,6 +58,14 @@ export default function transform(hookName, element, payload) {
       '[class*="sidebar"]',
       '.social',
       '.cmp-sharing',
+      // Content-fragment internal title duplicates the page H1 — drop it
+      '.cmp-contentfragment__title',
+      // Carousel prev/next/indicator chrome leaks as "Previous Next" text
+      '.cmp-carousel__actions',
+      '.cmp-carousel__action',
+      '.cmp-carousel__indicators',
+      '.cmp-tabs__tablist',
+      '.cmp-image-list__item-button',
     ]);
   }
 

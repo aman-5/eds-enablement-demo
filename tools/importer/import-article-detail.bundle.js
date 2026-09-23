@@ -83,7 +83,9 @@ var CustomImportScript = (() => {
         ".cmp-layoutcontainer--sidebar",
         '[class*="sidebar"]',
         ".social",
-        ".cmp-sharing"
+        ".cmp-sharing",
+        // Content-fragment internal title duplicates the page H1 — drop it
+        ".cmp-contentfragment__title"
       ]);
     }
     if (hookName === TransformHook.afterTransform) {

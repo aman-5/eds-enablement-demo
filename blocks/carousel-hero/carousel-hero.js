@@ -82,7 +82,14 @@ export default function decorate(block) {
   const show = (idx) => {
     current = (idx + slideEls.length) % slideEls.length;
     slideEls.forEach((s, i) => {
-      s.setAttribute('aria-hidden', i === current ? 'false' : 'true');
+      const hidden = i !== current;
+      s.setAttribute('aria-hidden', hidden ? 'true' : 'false');
+      // Keep focusable descendants out of the tab order on hidden slides so
+      // aria-hidden never traps focus (Lighthouse aria-hidden-focus).
+      s.querySelectorAll('a, button').forEach((el) => {
+        if (hidden) el.setAttribute('tabindex', '-1');
+        else el.removeAttribute('tabindex');
+      });
     });
     [...dots.children].forEach((d, i) => {
       if (i === current) d.setAttribute('aria-selected', 'true');

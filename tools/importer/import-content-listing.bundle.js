@@ -114,6 +114,34 @@ var CustomImportScript = (() => {
     element.replaceWith(block);
   }
 
+  // tools/importer/parsers/wknd-about-cards.js
+  function parse3(element, { document: document2 }) {
+    const cards = Array.from(element.querySelectorAll(".cmp-experience-fragment--contributor"));
+    if (!cards.length) return;
+    const cells = [];
+    cards.forEach((card) => {
+      const img = card.querySelector("img");
+      const name = card.querySelector("h3");
+      const role = card.querySelector("h5");
+      const imageCell = img || document2.createTextNode("");
+      const body = [];
+      if (name) {
+        const h = document2.createElement("h3");
+        h.textContent = name.textContent.trim();
+        body.push(h);
+      }
+      if (role) {
+        const p = document2.createElement("p");
+        p.textContent = role.textContent.trim();
+        body.push(p);
+      }
+      cells.push([imageCell, body.length ? body : document2.createTextNode("")]);
+    });
+    const block = WebImporter.Blocks.createBlock(document2, { name: "cards-article", cells });
+    cards[0].before(block);
+    cards.forEach((c) => c.remove());
+  }
+
   // tools/importer/transformers/wknd-cleanup.js
   var TransformHook = { beforeTransform: "beforeTransform", afterTransform: "afterTransform" };
   function rewriteLinks(element) {
@@ -151,7 +179,14 @@ var CustomImportScript = (() => {
         // Adobe DX tracking / ID-sync iframes and pixels (non-content)
         'iframe[src*="demdex"]',
         'a[href*="demdex"]',
-        '[id*="destination-publishing"]'
+        '[id*="destination-publishing"]',
+        // Article-detail chrome: related-articles sidebar and share widget
+        ".cmp-layoutcontainer--sidebar",
+        '[class*="sidebar"]',
+        ".social",
+        ".cmp-sharing",
+        // Content-fragment internal title duplicates the page H1 — drop it
+        ".cmp-contentfragment__title"
       ]);
     }
     if (hookName === TransformHook.afterTransform) {
@@ -246,6 +281,11 @@ var CustomImportScript = (() => {
     transform: (payload) => {
       const { document: document2, url, params } = payload;
       const main = document2.body;
+      try {
+        parse3(main, { document: document2, url, params });
+      } catch (e) {
+        console.error("about-cards parser failed:", e);
+      }
       executeTransformers("beforeTransform", main, payload);
       const pageBlocks = findBlocksOnPage(document2, PAGE_TEMPLATE);
       pageBlocks.forEach((block) => {
