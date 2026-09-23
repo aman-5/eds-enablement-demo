@@ -2,14 +2,21 @@
 /* global WebImporter */
 import columnsIntroParser from './parsers/wknd-columns-intro.js';
 import cardsArticleParser from './parsers/wknd-cards-article.js';
+import heroOverlayParser from './parsers/wknd-hero-overlay.js';
 import cleanupTransformer from './transformers/wknd-cleanup.js';
 
-const parsers = { 'columns-intro': columnsIntroParser, 'cards-article': cardsArticleParser };
+const parsers = {
+  'columns-intro': columnsIntroParser,
+  'cards-article': cardsArticleParser,
+  'hero-overlay': heroOverlayParser,
+};
 
 const PAGE_TEMPLATE = {
   name: 'adventures-listing',
   urls: ['https://wknd.site/us/en/adventures.html'],
   blocks: [
+    // Full-bleed intro teaser ("Experience the world with us") -> hero-overlay.
+    { name: 'hero-overlay', instances: ['.teaser.cmp-teaser--hero'] },
     { name: 'columns-intro', instances: ['.teaser.cmp-teaser--featured', '.teaser.cmp-teaser--content'] },
     { name: 'cards-article', instances: ['ul.cmp-image-list'] },
   ],

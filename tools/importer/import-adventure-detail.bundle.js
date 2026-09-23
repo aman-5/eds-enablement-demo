@@ -79,6 +79,86 @@ var CustomImportScript = (() => {
     element.replaceWith(block);
   }
 
+  // parsers/wknd-tabs.js
+  function parse2(element, { document }) {
+    const tabsRoots = Array.from(element.querySelectorAll(".cmp-tabs"));
+    if (!tabsRoots.length) return;
+    tabsRoots.forEach((root) => {
+      const tabItems = Array.from(root.querySelectorAll(".cmp-tabs__tablist > .cmp-tabs__tab"));
+      const panels = Array.from(root.querySelectorAll(".cmp-tabs__tabpanel"));
+      if (!tabItems.length || !panels.length) return;
+      const cells = [];
+      tabItems.forEach((tab, i) => {
+        const label = (tab.textContent || "").trim() || `Tab ${i + 1}`;
+        const controls = tab.getAttribute("aria-controls");
+        let panel = controls ? root.querySelector(`#${CSS.escape(controls)}`) : null;
+        if (!panel) panel = panels[i];
+        if (!panel) return;
+        const labelDiv = document.createElement("div");
+        labelDiv.textContent = label;
+        const bodyDiv = document.createElement("div");
+        while (panel.firstChild) bodyDiv.append(panel.firstChild);
+        cells.push([labelDiv, bodyDiv]);
+      });
+      if (!cells.length) return;
+      const block = WebImporter.Blocks.createBlock(document, { name: "tabs", cells });
+      root.replaceWith(block);
+    });
+  }
+
+  // parsers/wknd-trip-details.js
+  function parse3(element, { document }) {
+    const dls = Array.from(element.querySelectorAll("dl.cmp-contentfragment__elements"));
+    if (!dls.length) return;
+    const dl = dls[0];
+    const items = Array.from(dl.querySelectorAll(".cmp-contentfragment__element"));
+    if (!items.length) return;
+    const cells = [];
+    items.forEach((el) => {
+      const dt = el.querySelector(".cmp-contentfragment__element-title, dt");
+      const dd = el.querySelector(".cmp-contentfragment__element-value, dd");
+      const label = dt ? dt.textContent.trim() : "";
+      const value = dd ? dd.textContent.trim() : "";
+      if (!label && !value) return;
+      const l = document.createElement("div");
+      l.textContent = label;
+      const v = document.createElement("div");
+      v.textContent = value;
+      cells.push([l, v]);
+    });
+    if (!cells.length) return;
+    const block = WebImporter.Blocks.createBlock(document, { name: "trip-details", cells });
+    const wrapper = dl.closest(".cmp-contentfragment") || dl;
+    wrapper.replaceWith(block);
+  }
+
+  // parsers/wknd-share.js
+  function parse4(element, { document, url, params }) {
+    const sharing = element.querySelector(".sharing");
+    if (!sharing) return;
+    const originalURL = params && params.originalURL || url || "";
+    let pagePath = "";
+    try {
+      pagePath = new URL(originalURL).pathname.replace(/\.html?$/, "");
+    } catch (e) {
+      pagePath = "";
+    }
+    const shareTarget = `https://wknd.site${pagePath}`;
+    const enc = encodeURIComponent(shareTarget);
+    const links = [
+      { label: "Facebook", href: `https://www.facebook.com/sharer/sharer.php?u=${enc}` },
+      { label: "Pinterest", href: `https://www.pinterest.com/pin/create/button/?url=${enc}` }
+    ];
+    const cells = links.map(({ label, href }) => {
+      const a = document.createElement("a");
+      a.href = href;
+      a.textContent = label;
+      return [a];
+    });
+    const block = WebImporter.Blocks.createBlock(document, { name: "share", cells });
+    sharing.replaceWith(block);
+  }
+
   // transformers/wknd-cleanup.js
   var TransformHook = { beforeTransform: "beforeTransform", afterTransform: "afterTransform" };
   function rewriteLinks(element) {
@@ -160,6 +240,21 @@ var CustomImportScript = (() => {
       const { document, url, params } = payload;
       const main = document.body;
       const ep = __spreadProps(__spreadValues({}, payload), { template: PAGE_TEMPLATE });
+      try {
+        parse3(main, { document, url, params });
+      } catch (e) {
+        console.error("trip-details parser failed:", e);
+      }
+      try {
+        parse4(main, { document, url, params });
+      } catch (e) {
+        console.error("share parser failed:", e);
+      }
+      try {
+        parse2(main, { document, url, params });
+      } catch (e) {
+        console.error("tabs parser failed:", e);
+      }
       transform("beforeTransform", main, ep);
       const pageBlocks = findBlocksOnPage(document, PAGE_TEMPLATE);
       pageBlocks.forEach((block) => {
@@ -174,6 +269,24 @@ var CustomImportScript = (() => {
         }
       });
       transform("afterTransform", main, ep);
+      try {
+        const tables = Array.from(main.querySelectorAll("table"));
+        const carouselTable = tables.find((t) => {
+          const head = t.querySelector("tr");
+          return head && /carousel[\s-]*hero/i.test(head.textContent || "");
+        });
+        if (carouselTable) {
+          const hr2 = document.createElement("hr");
+          carouselTable.after(hr2);
+          const metaBlock = WebImporter.Blocks.createBlock(document, {
+            name: "Section Metadata",
+            cells: { style: "two-column" }
+          });
+          hr2.after(metaBlock);
+        }
+      } catch (e) {
+        console.error("section layout failed:", e);
+      }
       const hr = document.createElement("hr");
       main.appendChild(hr);
       WebImporter.rules.createMetadata(main, document);

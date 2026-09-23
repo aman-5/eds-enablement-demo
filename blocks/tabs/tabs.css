@@ -1,0 +1,49 @@
+/* tabs — WKND adventure detail (Overview / Itinerary / What to Bring) and
+   adventures listing category filter. Tablist of text tabs above the panels;
+   active tab underlined; matches WKND type (Source Sans, uppercase tabs). */
+
+.tabs .tabs-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 0 0 24px;
+  border-bottom: 1px solid var(--light-color);
+}
+
+.tabs .tabs-tab {
+  margin: 0;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  padding: 12px 20px;
+  background: transparent;
+  color: var(--text-color);
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.tabs .tabs-tab:hover,
+.tabs .tabs-tab:focus-visible {
+  color: #000;
+}
+
+.tabs .tabs-tab[aria-selected="true"] {
+  border-bottom-color: var(--text-color);
+}
+
+.tabs .tabs-panel {
+  margin: 0;
+}
+
+.tabs .tabs-panel[hidden] {
+  display: none;
+}
+
+.tabs .tabs-panel > *:first-child {
+  margin-top: 0;
+}

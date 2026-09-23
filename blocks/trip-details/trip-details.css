@@ -1,0 +1,38 @@
+/* trip-details — WKND adventure fact list. Source .cmp-contentfragment__elements:
+   label (dt) 12px uppercase grey; value (dd) 14px semibold #202020; stacked
+   pairs with a divider between rows. Sits in the left sidebar column. */
+
+.trip-details dl {
+  margin: 0;
+}
+
+.trip-details dt {
+  margin: 0;
+  font-family: var(--body-font-family);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: rgb(105 105 105);
+}
+
+.trip-details dd {
+  margin: 2px 0 0;
+  padding: 0 0 14px;
+  border-bottom: 1px solid var(--light-color);
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text-color);
+}
+
+.trip-details dd:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.trip-details dt:not(:first-child) {
+  margin-top: 14px;
+}

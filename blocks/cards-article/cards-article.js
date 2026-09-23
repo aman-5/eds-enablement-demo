@@ -113,6 +113,27 @@ function decorateStatic(block) {
     const optimizedPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
     img.closest('picture').replaceWith(optimizedPic);
   });
+
+  // Source wraps each card photo in a link to the same destination as the
+  // title. Mirror that (skip the contributors variant, whose cards aren't
+  // linked). Only wrap when the card body has a title link to point at.
+  if (!block.classList.contains('contributors')) {
+    ul.querySelectorAll('li').forEach((li) => {
+      const imageDiv = li.querySelector('.cards-article-card-image');
+      const pic = imageDiv && imageDiv.querySelector('picture');
+      const titleLink = li.querySelector('.cards-article-card-body h3 a[href]');
+      if (pic && titleLink && !imageDiv.querySelector('a')) {
+        const a = document.createElement('a');
+        a.href = titleLink.getAttribute('href');
+        a.setAttribute('aria-hidden', 'true');
+        a.setAttribute('tabindex', '-1');
+        a.className = 'cards-article-card-image-link';
+        pic.replaceWith(a);
+        a.append(pic);
+      }
+    });
+  }
+
   block.textContent = '';
   block.append(ul);
 }

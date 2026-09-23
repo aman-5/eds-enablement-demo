@@ -189,6 +189,16 @@
   transform: translate(-50%, -50%) rotate(45deg);
 }
 
+/* --- Gallery mode (adventure-detail): image-only slides, no white text box.
+   Constrained to the content width, moderate height, controls below/over. */
+.carousel-hero.carousel-hero-gallery .carousel-hero-content {
+  display: none;
+}
+
+.carousel-hero.carousel-hero-gallery .carousel-hero-media {
+  height: clamp(280px, 42vw, 460px);
+}
+
 /* ===================== Desktop ===================== */
 @media (width >= 900px) {
   /* white strip below the photo holds dots + arrows */
@@ -227,5 +237,14 @@
   .carousel-hero .carousel-hero-nav {
     bottom: 2px;
     right: 0;
+  }
+
+  /* Gallery mode on desktop: shorter photo, no overlap box, dots below */
+  .carousel-hero.carousel-hero-gallery .carousel-hero-media {
+    height: 460px;
+  }
+
+  .carousel-hero.carousel-hero-gallery {
+    padding-bottom: 44px;
   }
 }
