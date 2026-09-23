@@ -12,6 +12,7 @@ import {
   buildBlock,
   readBlockConfig,
   toClassName,
+  getMetadata,
 } from './aem.js';
 
 if (window.trustedTypes && window.trustedTypes.createPolicy) {
@@ -201,9 +202,23 @@ function ensureCanonical() {
   document.head.append(link);
 }
 
+/**
+ * Ensure the document has a non-empty <title>. AEM injects <title> server-side
+ * in production, but fall back to the page's Title metadata (or the first
+ * heading) so the page is never title-less for crawlers / bots.
+ */
+function ensureTitle() {
+  if (document.title && document.title.trim()) return;
+  const metaTitle = getMetadata('title') || getMetadata('og:title');
+  const heading = document.querySelector('main h1, main h2');
+  const title = (metaTitle || (heading && heading.textContent) || '').trim();
+  if (title) document.title = title;
+}
+
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   ensureCanonical();
+  ensureTitle();
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
