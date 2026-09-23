@@ -1,111 +1,99 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
-// media query match that indicates mobile/tablet width
+// media query match that indicates desktop width
 const isDesktop = window.matchMedia('(min-width: 900px)');
 
-function closeOnEscape(e) {
-  if (e.code === 'Escape') {
-    const nav = document.getElementById('nav');
-    const navSections = nav.querySelector('.nav-sections');
-    if (!navSections) return;
-    const navSectionExpanded = navSections.querySelector('[aria-expanded="true"]');
-    if (navSectionExpanded && isDesktop.matches) {
-      // eslint-disable-next-line no-use-before-define
-      toggleAllNavSections(navSections);
-      navSectionExpanded.focus();
-    } else if (!isDesktop.matches) {
-      // eslint-disable-next-line no-use-before-define
-      toggleMenu(nav, navSections);
-      nav.querySelector('button').focus();
-    }
-  }
-}
+// Inline US flag (SVG data URI) for the locale toggle — the nav fragment
+// carries no flag asset, so provide one to match wknd.site. The SVG markup is
+// URL-encoded so the unescaped angle brackets/quotes don't break the src attr.
+const US_FLAG_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 14">'
+  + '<rect width="20" height="14" fill="#b22234"/>'
+  + '<g fill="#fff">'
+  + '<rect y="1.08" width="20" height="1.08"/><rect y="3.23" width="20" height="1.08"/>'
+  + '<rect y="5.38" width="20" height="1.08"/><rect y="7.54" width="20" height="1.08"/>'
+  + '<rect y="9.69" width="20" height="1.08"/><rect y="11.85" width="20" height="1.08"/>'
+  + '</g>'
+  + '<rect width="8" height="7.54" fill="#3c3b6e"/></svg>';
+const US_FLAG = `data:image/svg+xml,${encodeURIComponent(US_FLAG_SVG)}`;
 
-function closeOnFocusLost(e) {
-  const nav = e.currentTarget;
-  if (!nav.contains(e.relatedTarget)) {
-    const navSections = nav.querySelector('.nav-sections');
-    if (!navSections) return;
-    const navSectionExpanded = navSections.querySelector('[aria-expanded="true"]');
-    if (navSectionExpanded && isDesktop.matches) {
-      // eslint-disable-next-line no-use-before-define
-      toggleAllNavSections(navSections, false);
-    } else if (!isDesktop.matches) {
-      // eslint-disable-next-line no-use-before-define
-      toggleMenu(nav, navSections, false);
-    }
-  }
-}
+// Countries -> locales for the language dropdown (mirrors wknd.site).
+const LOCALES = [
+  { country: 'United States', items: [['en-US', '/us/en'], ['es-US', '/us/es']] },
+  { country: 'Canada', items: [['en-CA', '/ca/en'], ['fr-CA', '/ca/fr']] },
+  { country: 'Switzerland', items: [['de-CH', '/ch/de'], ['fr-CH', '/ch/fr'], ['it-CH', '/ch/it']] },
+  { country: 'Germany', items: [['de-DE', '/de/de']] },
+  { country: 'France', items: [['fr-FR', '/fr/fr']] },
+  { country: 'Spain', items: [['es-ES', '/es/es']] },
+  { country: 'Italy', items: [['it-IT', '/it/it']] },
+];
 
-function openOnKeydown(e) {
-  const focused = document.activeElement;
-  const isNavDrop = focused.className === 'nav-drop';
-  if (isNavDrop && (e.code === 'Enter' || e.code === 'Space')) {
-    const dropExpanded = focused.getAttribute('aria-expanded') === 'true';
-    // eslint-disable-next-line no-use-before-define
-    toggleAllNavSections(focused.closest('.nav-sections'));
-    focused.setAttribute('aria-expanded', dropExpanded ? 'false' : 'true');
-  }
-}
+/** Build the locale dropdown (flag + code toggle → grouped country list). */
+function buildLocale() {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'nav-locale';
 
-function focusNavSection() {
-  document.activeElement.addEventListener('keydown', openOnKeydown);
-}
+  const toggle = document.createElement('button');
+  toggle.type = 'button';
+  toggle.className = 'nav-locale-toggle';
+  toggle.setAttribute('aria-expanded', 'false');
+  toggle.setAttribute('aria-label', 'Toggle language United States en-US');
+  toggle.innerHTML = `<img src="${US_FLAG}" alt="" width="20" height="14">
+    <span class="nav-locale-code">en-US</span>`;
 
-/**
- * Toggles all nav sections
- * @param {Element} sections The container element
- * @param {Boolean} expanded Whether the element should be expanded or collapsed
- */
-function toggleAllNavSections(sections, expanded = false) {
-  if (!sections) return;
-  sections.querySelectorAll('.nav-sections .default-content-wrapper > ul > li').forEach((section) => {
-    section.setAttribute('aria-expanded', expanded);
+  const panel = document.createElement('div');
+  panel.className = 'nav-locale-panel';
+  const list = document.createElement('ul');
+  LOCALES.forEach(({ country, items }) => {
+    const li = document.createElement('li');
+    li.append(document.createTextNode(country));
+    const sub = document.createElement('ul');
+    items.forEach(([code, href]) => {
+      const subLi = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = href;
+      a.textContent = code;
+      subLi.append(a);
+      sub.append(subLi);
+    });
+    li.append(sub);
+    list.append(li);
   });
+  panel.append(list);
+
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    wrapper.classList.toggle('is-open', !open);
+  });
+  document.addEventListener('click', (e) => {
+    if (!wrapper.contains(e.target)) {
+      toggle.setAttribute('aria-expanded', 'false');
+      wrapper.classList.remove('is-open');
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.code === 'Escape') {
+      toggle.setAttribute('aria-expanded', 'false');
+      wrapper.classList.remove('is-open');
+    }
+  });
+
+  wrapper.append(toggle, panel);
+  return wrapper;
 }
 
-/**
- * Toggles the entire nav
- * @param {Element} nav The container element
- * @param {Element} navSections The nav sections within the container element
- * @param {*} forceExpanded Optional param to force nav expand behavior when not null
- */
-function toggleMenu(nav, navSections, forceExpanded = null) {
-  const expanded = forceExpanded !== null ? !forceExpanded : nav.getAttribute('aria-expanded') === 'true';
-  const button = nav.querySelector('.nav-hamburger button');
-  document.body.style.overflowY = (expanded || isDesktop.matches) ? '' : 'hidden';
-  nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-  toggleAllNavSections(navSections, expanded || isDesktop.matches ? 'false' : 'true');
-  button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
-  // enable nav dropdown keyboard accessibility
-  if (navSections) {
-    const navDrops = navSections.querySelectorAll('.nav-drop');
-    if (isDesktop.matches) {
-      navDrops.forEach((drop) => {
-        if (!drop.hasAttribute('tabindex')) {
-          drop.setAttribute('tabindex', 0);
-          drop.addEventListener('focus', focusNavSection);
-        }
-      });
-    } else {
-      navDrops.forEach((drop) => {
-        drop.removeAttribute('tabindex');
-        drop.removeEventListener('focus', focusNavSection);
-      });
-    }
-  }
-
-  // enable menu collapse on escape keypress
-  if (!expanded || isDesktop.matches) {
-    // collapse menu on escape press
-    window.addEventListener('keydown', closeOnEscape);
-    // collapse menu on focus lost
-    nav.addEventListener('focusout', closeOnFocusLost);
-  } else {
-    window.removeEventListener('keydown', closeOnEscape);
-    nav.removeEventListener('focusout', closeOnFocusLost);
-  }
+/** Build the search form. Controls are created here, not in the fragment. */
+function buildSearch() {
+  const form = document.createElement('form');
+  form.className = 'nav-search';
+  form.setAttribute('role', 'search');
+  form.action = '/us/en/magazine';
+  form.method = 'get';
+  form.innerHTML = `<span class="nav-search-icon" aria-hidden="true"></span>
+    <input type="search" name="q" placeholder="Search" aria-label="Search" autocomplete="off">`;
+  return form;
 }
 
 /**
@@ -113,151 +101,89 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  // load nav as fragment.
-  // metadata-independent dual-fetch: /content first (localhost aem up), then root (DA/EDS prod).
   const navMeta = getMetadata('nav');
   let fragment;
   if (navMeta) {
     fragment = await loadFragment(new URL(navMeta, window.location).pathname);
   }
-  // Root path first (production canonical + resolves locally via aem up),
-  // then /content fallback. Root-first avoids a 404 on production where
-  // content is served at the site root, not under /content.
   if (!fragment) fragment = await loadFragment('/nav');
   if (!fragment) fragment = await loadFragment('/content/nav');
 
-  // decorate nav DOM
   block.textContent = '';
+  if (!fragment) return;
+
+  // Locate the pieces of the nav fragment by what they ARE (content-driven):
+  // the brand link (wraps text/logo), and the primary nav <ul>.
+  const scope = fragment;
+  const logoLink = [...scope.querySelectorAll('p a, div a')].find((a) => /\/us\/en\/?$/.test(a.getAttribute('href') || ''))
+    || scope.querySelector('a');
+  const navList = scope.querySelector('ul');
+
   const nav = document.createElement('nav');
   nav.id = 'nav';
-  while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
+  nav.setAttribute('aria-label', 'Main navigation');
 
-  const classes = ['brand', 'sections', 'tools'];
-  classes.forEach((c, i) => {
-    const section = nav.children[i];
-    if (section) section.classList.add(`nav-${c}`);
+  // --- Utility bar (dark): Sign In + locale, right-aligned ---
+  const utility = document.createElement('div');
+  utility.className = 'nav-utility';
+  const utilityInner = document.createElement('div');
+  utilityInner.className = 'nav-utility-inner';
+  const signIn = document.createElement('a');
+  signIn.className = 'nav-signin';
+  signIn.href = '/us/en';
+  signIn.textContent = 'Sign In';
+  utilityInner.append(signIn, buildLocale());
+  utility.append(utilityInner);
+  nav.append(utility);
+
+  // --- Main header (white): logo + hamburger + nav links + search ---
+  const main = document.createElement('div');
+  main.className = 'nav-main';
+  const inner = document.createElement('div');
+  inner.className = 'nav-main-inner';
+
+  const brand = document.createElement('div');
+  brand.className = 'nav-brand';
+  if (logoLink) {
+    const label = logoLink.textContent.trim() || 'WKND';
+    const a = document.createElement('a');
+    a.href = logoLink.getAttribute('href') || '/us/en';
+    a.setAttribute('aria-label', label);
+    a.innerHTML = `<img class="nav-logo" src="/icons/wknd-logo.svg" alt="${label}" width="120" height="45" loading="eager">`;
+    brand.append(a);
+  }
+
+  const hamburger = document.createElement('button');
+  hamburger.type = 'button';
+  hamburger.className = 'nav-hamburger';
+  hamburger.setAttribute('aria-label', 'Open navigation');
+  hamburger.setAttribute('aria-expanded', 'false');
+  hamburger.innerHTML = '<span class="nav-hamburger-icon"></span>';
+
+  const sections = document.createElement('div');
+  sections.className = 'nav-sections';
+  if (navList) sections.append(navList.cloneNode(true));
+  sections.append(buildSearch());
+
+  hamburger.addEventListener('click', () => {
+    const open = hamburger.getAttribute('aria-expanded') === 'true';
+    hamburger.setAttribute('aria-expanded', String(!open));
+    hamburger.setAttribute('aria-label', open ? 'Open navigation' : 'Close navigation');
+    nav.classList.toggle('is-open', !open);
   });
 
-  const navBrand = nav.querySelector('.nav-brand');
-  const brandLink = navBrand.querySelector('.button');
-  if (brandLink) {
-    brandLink.className = '';
-    brandLink.closest('.button-container').className = '';
-  }
-  // Swap the brand text for the WKND logo (SVG), keeping the text as the
-  // accessible label / img alt.
-  const brandAnchor = navBrand.querySelector('a');
-  if (brandAnchor) {
-    const label = brandAnchor.textContent.trim() || 'WKND';
-    brandAnchor.setAttribute('aria-label', label);
-    brandAnchor.innerHTML = `<img class="nav-logo" src="/icons/wknd-logo.svg" alt="${label}" width="120" height="45" loading="eager">`;
-  }
+  inner.append(brand, hamburger, sections);
+  main.append(inner);
+  nav.append(main);
 
-  const navSections = nav.querySelector('.nav-sections');
-  if (navSections) {
-    navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
-      if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
-      navSection.addEventListener('click', () => {
-        if (isDesktop.matches) {
-          const expanded = navSection.getAttribute('aria-expanded') === 'true';
-          toggleAllNavSections(navSections);
-          navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-        }
-      });
-    });
-  }
-
-  // Build the tools section (right side of the nav): a locale toggle + search
-  // box. The nav fragment's third cell is empty and gets dropped by
-  // loadFragment, so create nav-tools if it isn't present.
-  let navTools = nav.querySelector('.nav-tools');
-  if (!navTools) {
-    navTools = document.createElement('div');
-    navTools.classList.add('nav-tools');
-    nav.append(navTools);
-  }
-
-  // Sign In + language selector (WKND top-right controls). The language
-  // toggle opens a grouped country -> locale dropdown, mirroring wknd.site.
-  if (!navTools.querySelector('.nav-account')) {
-    const account = document.createElement('div');
-    account.className = 'nav-account';
-    account.innerHTML = `<a class="nav-signin" href="/us/en">Sign In</a>
-      <div class="nav-lang">
-        <button type="button" class="nav-lang-toggle" aria-expanded="false" aria-haspopup="true">en-US</button>
-        <div class="nav-lang-menu" hidden>
-          <ul>
-            <li class="nav-lang-country">United States<ul>
-              <li><a href="/us/en">en-US</a></li>
-              <li><a href="/us/es">es-US</a></li>
-            </ul></li>
-            <li class="nav-lang-country">Canada<ul>
-              <li><a href="/ca/en">en-CA</a></li>
-              <li><a href="/ca/fr">fr-CA</a></li>
-            </ul></li>
-            <li class="nav-lang-country">Switzerland<ul>
-              <li><a href="/ch/de">de-CH</a></li>
-              <li><a href="/ch/fr">fr-CH</a></li>
-              <li><a href="/ch/it">it-CH</a></li>
-            </ul></li>
-            <li class="nav-lang-country">Germany<ul>
-              <li><a href="/de/de">de-DE</a></li>
-            </ul></li>
-            <li class="nav-lang-country">France<ul>
-              <li><a href="/fr/fr">fr-FR</a></li>
-            </ul></li>
-            <li class="nav-lang-country">Spain<ul>
-              <li><a href="/es/es">es-ES</a></li>
-            </ul></li>
-            <li class="nav-lang-country">Italy<ul>
-              <li><a href="/it/it">it-IT</a></li>
-            </ul></li>
-          </ul>
-        </div>
-      </div>`;
-    navTools.append(account);
-
-    const langToggle = account.querySelector('.nav-lang-toggle');
-    const langMenu = account.querySelector('.nav-lang-menu');
-    const closeLang = () => {
-      langToggle.setAttribute('aria-expanded', 'false');
-      langMenu.hidden = true;
-    };
-    langToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const open = langToggle.getAttribute('aria-expanded') === 'true';
-      langToggle.setAttribute('aria-expanded', open ? 'false' : 'true');
-      langMenu.hidden = open;
-    });
-    document.addEventListener('click', (e) => {
-      if (!account.contains(e.target)) closeLang();
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.code === 'Escape') closeLang();
-    });
-  }
-
-  const search = document.createElement('div');
-  search.className = 'nav-search';
-  search.innerHTML = `<form role="search" class="nav-search-form" action="/us/en/magazine">
-      <span class="nav-search-icon" aria-hidden="true"></span>
-      <label class="nav-search-label" for="nav-search-input">Search</label>
-      <input id="nav-search-input" name="q" type="search" placeholder="Search" autocomplete="off">
-    </form>`;
-  navTools.append(search);
-
-  // hamburger for mobile
-  const hamburger = document.createElement('div');
-  hamburger.classList.add('nav-hamburger');
-  hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
-      <span class="nav-hamburger-icon"></span>
-    </button>`;
-  hamburger.addEventListener('click', () => toggleMenu(nav, navSections));
-  nav.prepend(hamburger);
-  nav.setAttribute('aria-expanded', 'false');
-  // prevent mobile nav behavior on window resize
-  toggleMenu(nav, navSections, isDesktop.matches);
-  isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
+  // Reset transient state when crossing the desktop/mobile breakpoint.
+  isDesktop.addEventListener('change', () => {
+    nav.classList.remove('is-open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    hamburger.setAttribute('aria-label', 'Open navigation');
+    nav.querySelectorAll('.nav-locale').forEach((l) => l.classList.remove('is-open'));
+    nav.querySelectorAll('.nav-locale-toggle').forEach((t) => t.setAttribute('aria-expanded', 'false'));
+  });
 
   const navWrapper = document.createElement('div');
   navWrapper.className = 'nav-wrapper';
