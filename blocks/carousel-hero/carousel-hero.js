@@ -98,9 +98,30 @@ export default function decorate(block) {
     container.style.transform = `translateX(-${current * 100}%)`;
   };
 
-  prev.addEventListener('click', () => show(current - 1));
-  next.addEventListener('click', () => show(current + 1));
-  [...dots.children].forEach((d, i) => d.addEventListener('click', () => show(i)));
+  // Autoplay: advance every 10s. Pause on hover/focus and when the tab is
+  // hidden; respect prefers-reduced-motion (no autoplay).
+  const AUTOPLAY_MS = 10000;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let timer = null;
+  const stop = () => { if (timer) { clearInterval(timer); timer = null; } };
+  const start = () => {
+    if (reduceMotion || timer) return;
+    timer = setInterval(() => show(current + 1), AUTOPLAY_MS);
+  };
+  const restart = () => { stop(); start(); };
+
+  prev.addEventListener('click', () => { show(current - 1); restart(); });
+  next.addEventListener('click', () => { show(current + 1); restart(); });
+  [...dots.children].forEach((d, i) => d.addEventListener('click', () => { show(i); restart(); }));
+
+  block.addEventListener('mouseenter', stop);
+  block.addEventListener('mouseleave', start);
+  block.addEventListener('focusin', stop);
+  block.addEventListener('focusout', start);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop(); else start();
+  });
 
   show(0);
+  start();
 }

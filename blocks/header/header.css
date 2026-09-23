@@ -6,6 +6,95 @@ header .nav-wrapper {
   position: fixed;
 }
 
+/* dark utility bar (WKND top row) */
+header .nav-utility {
+  background-color: var(--dark-color);
+  color: #f7f7f7;
+}
+
+header .nav-utility-inner {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
+  max-width: 1264px;
+  margin: auto;
+  height: 36px;
+  padding: 0 24px;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+header .nav-utility a:any-link,
+header .nav-utility .nav-utility-lang {
+  color: #f7f7f7;
+  text-decoration: none;
+}
+
+header .nav-utility a:hover {
+  text-decoration: underline;
+}
+
+@media (width >= 900px) {
+  header .nav-utility-inner {
+    padding: 0 32px;
+  }
+}
+
+/* header search box */
+header .nav-search {
+  display: flex;
+  align-items: center;
+}
+
+header .nav-search-form {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 1px solid var(--text-color);
+  padding: 4px 0;
+}
+
+header .nav-search-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+header .nav-search-icon {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--text-color);
+  border-radius: 50%;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+header .nav-search-icon::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  bottom: -3px;
+  width: 6px;
+  height: 2px;
+  background: var(--text-color);
+  transform: rotate(45deg);
+}
+
+header .nav-search-input,
+header .nav-search input {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  text-transform: uppercase;
+  width: 120px;
+}
+
 header nav {
   box-sizing: border-box;
   display: grid;
@@ -54,6 +143,7 @@ header nav p {
   line-height: 1;
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 header nav a:any-link {
   color: currentcolor;
 }
@@ -170,11 +260,30 @@ header nav[aria-expanded='true'] .nav-sections {
 header nav .nav-sections ul {
   list-style: none;
   padding-left: 0;
-  font-size: var(--body-font-size-s);
+  font-size: 14px;
 }
 
 header nav .nav-sections ul > li {
-  font-weight: 500;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+/* WKND nav links: uppercase 14px, yellow background on hover/focus */
+header nav .nav-sections a:any-link {
+  display: inline-block;
+  padding: 15px 17px;
+  font-size: 14px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: var(--text-color);
+  transition: background-color 0.2s ease;
+}
+
+header nav .nav-sections a:hover,
+header nav .nav-sections a:focus {
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  text-decoration: none;
 }
 
 header nav .nav-sections ul > li > ul {
@@ -224,7 +333,7 @@ header nav .nav-sections ul > li > ul > li {
 
   header nav .nav-sections ul {
     display: flex;
-    gap: 24px;
+    gap: 0;
     margin: 0;
   }
 
@@ -269,4 +378,13 @@ header nav .nav-sections ul > li > ul > li {
 /* tools */
 header nav .nav-tools {
   grid-area: tools;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Sign In lives in the dark utility bar; hide any stray tools copy so it
+   doesn't duplicate (e.g. from a not-yet-republished nav fragment). */
+header nav .nav-tools p:has(> a[href$="/us/en"]) {
+  display: none;
 }

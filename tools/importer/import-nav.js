@@ -43,12 +43,11 @@ export default {
 
     main.append(document.createElement('hr'));
 
-    // Section 3: tools
+    // Section 3: tools. Search is injected by header.js (form controls are not
+    // authored in the fragment). Sign In lives in the dark utility bar, also
+    // built in header.js. Keep a placeholder so the 3-section structure holds.
     const toolsP = document.createElement('p');
-    const signIn = document.createElement('a');
-    signIn.href = '/us/en';
-    signIn.textContent = 'Sign In';
-    toolsP.append(signIn);
+    toolsP.textContent = ' ';
     main.append(toolsP);
 
     return [{

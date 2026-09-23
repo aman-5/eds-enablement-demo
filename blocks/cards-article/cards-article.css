@@ -11,12 +11,10 @@
   gap: 16px;
 }
 
-/* Card */
+/* Card — WKND: clean, square, no heavy border */
 .cards-article > ul > li {
   display: flex;
   flex-direction: column;
-  border: 1px solid rgb(232 232 232);
-  border-radius: 20px;
   overflow: hidden;
 }
 
@@ -34,7 +32,7 @@
 
 /* Body */
 .cards-article .cards-article-card-body {
-  padding: 24px;
+  padding: 20px 4px;
 }
 
 /* Meta line: tag pill + date */
@@ -65,20 +63,24 @@
   font-weight: 400;
 }
 
-/* Title */
+/* Title — WKND: blue link, Source Sans Pro, normal weight/case */
 .cards-article .cards-article-card-body h3 {
   margin: 0;
-  font-family: var(--heading-font-family);
+  font-family: var(--body-font-family);
   font-size: 18px;
-  font-weight: 700;
-  line-height: 19.8px;
-  text-transform: uppercase;
-  color: var(--text-color);
+  font-weight: 400;
+  line-height: 1.5;
+  text-transform: none;
+  color: #0045ff;
 }
 
 .cards-article .cards-article-card-body h3 a {
-  color: inherit;
+  color: #0045ff;
   text-decoration: none;
+}
+
+.cards-article .cards-article-card-body h3 a:hover {
+  text-decoration: underline;
 }
 
 @media (width >= 600px) {

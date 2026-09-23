@@ -176,6 +176,33 @@ p.button-wrapper {
   margin: 12px 0;
 }
 
+/*
+ * WKND section CTAs ("All Articles", "All Trips", "See more") are standalone
+ * links in default content. WKND renders them as yellow buttons, so style a
+ * paragraph that contains only a single link as a button. Scoped to default
+ * content so block-internal links (cards, teasers) are unaffected.
+ */
+main .default-content-wrapper p > a:only-child:not(.button) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 35px;
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.5;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+main .default-content-wrapper p > a:only-child:not(.button):hover {
+  background-color: var(--accent-hover-color);
+  color: var(--text-color);
+  text-decoration: none;
+}
+
 a.button:any-link,
 button.button {
   box-sizing: border-box;
@@ -184,14 +211,14 @@ button.button {
   justify-content: center;
   max-width: 100%;
   margin: 0;
-  border: 2px solid var(--accent-color);
+  border: 0;
   border-radius: 0;
   padding: 14px 35px;
   font-family: var(--body-font-family);
   font-weight: 600;
   font-size: 14px;
-  line-height: 1.25;
-  letter-spacing: 0.04em;
+  line-height: 1.5;
+  letter-spacing: normal;
   text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
@@ -200,14 +227,13 @@ button.button {
   white-space: nowrap;
   background-color: var(--accent-color);
   color: var(--text-color);
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 a.button:hover,
 a.button:focus-visible,
 button.button:hover,
 button.button:focus-visible {
-  border-color: var(--accent-hover-color);
   background-color: var(--accent-hover-color);
   color: var(--text-color);
   text-decoration: none;
@@ -222,7 +248,6 @@ button.button:disabled {
 /* primary = WKND signature yellow (same as default button) */
 a.button.primary,
 button.button.primary {
-  border-color: var(--accent-color);
   background-color: var(--accent-color);
   color: var(--text-color);
 }
@@ -231,7 +256,6 @@ a.button.primary:hover,
 a.button.primary:focus-visible,
 button.button.primary:hover,
 button.button.primary:focus-visible {
-  border-color: var(--accent-hover-color);
   background-color: var(--accent-hover-color);
   color: var(--text-color);
 }
