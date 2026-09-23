@@ -19,7 +19,11 @@ const PAGE_TEMPLATE = {
 function findBlocksOnPage(document, template) {
   const pageBlocks = [];
   template.blocks.forEach((b) => b.instances.forEach((sel) => {
-    document.querySelectorAll(sel).forEach((el) => pageBlocks.push({ name: b.name, selector: sel, element: el }));
+    let els = [...document.querySelectorAll(sel)];
+    // The tab widget renders one card list per category tab (All + 5 categories),
+    // all containing the same cards. Only keep the FIRST image-list ("All").
+    if (b.name === 'cards-article') els = els.slice(0, 1);
+    els.forEach((el) => pageBlocks.push({ name: b.name, selector: sel, element: el }));
   }));
   console.log(`Found ${pageBlocks.length} block instances on page`);
   return pageBlocks;

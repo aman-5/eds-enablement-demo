@@ -4,6 +4,7 @@
 // PARSER IMPORTS
 import columnsIntroParser from './parsers/wknd-columns-intro.js';
 import cardsArticleParser from './parsers/wknd-cards-article.js';
+import aboutCardsParser from './parsers/wknd-about-cards.js';
 
 // TRANSFORMER IMPORTS
 import cleanupTransformer from './transformers/wknd-cleanup.js';
@@ -55,6 +56,10 @@ export default {
   transform: (payload) => {
     const { document, url, params } = payload;
     const main = document.body;
+
+    // about-us: convert contributor/guide experience-fragment cards into a
+    // cards-article block BEFORE cleanup strips .experiencefragment.
+    try { aboutCardsParser(main, { document, url, params }); } catch (e) { console.error('about-cards parser failed:', e); }
 
     executeTransformers('beforeTransform', main, payload);
 

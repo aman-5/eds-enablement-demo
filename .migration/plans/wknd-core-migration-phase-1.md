@@ -1,112 +1,124 @@
-# WKND Core Migration — Phase 1 Plan
+# WKND Core Migration — Phase 2 Plan
 
-## Source & Target
-- **Source:** `https://wknd.site/us/en.html` (classic WKND — adventure/travel magazine site)
-- **Target:** Current EDS project (EMA + Document Authoring, `projectType: da`)
-- **Note:** Existing repo assets (`columns-intro`, `columns-article`, `cards-gallery`, `tabs-testimonial`, `cards-article`, `accordion-faq`, `hero-overlay`, plus `about-us` content and the `wknd-trendsetters` importer) were built for a *different* WKND variant. They are treated as **inspect → reuse-or-replace** material, not authoritative.
+## Alignment Confirmation
+Your Phase 2 and mine are **on the same page**. This plan adopts your 10 steps and final-check list verbatim, layered onto the concrete state Phase 1 left behind. Two scope decisions you made are baked in:
+- **Locale scope: `/us/en` only** — import the ~18 remaining `/us/en` pages. Other locales (`/ca/en`, `/de/de`, …) are structural duplicates and are **out of scope** for Phase 2.
+- **DA publish + PR: skipped for now** — do all local work; mark **Document Authoring publish**, **da.live preview/publish**, **feature branch + PR**, and **final EDS URL** as **BLOCKED (deferred by user)**. Never fabricated.
 
-> **This plan is written for Execute mode.** All steps below are write/execution actions and require switching out of Plan mode to run.
+## On your trailing-slash idea — agreed, adding it
+You're right, and it's a good call. On EDS, `/us/en` is the canonical path and a stray trailing slash (`/us/en/`) 404s — that hurts both UX and SEO (duplicate/lost URLs). I'll add a small, safe **trailing-slash normalizer** early in `scripts.js` (never `aem.js`, which is vendored): if a non-root path ends in `/`, strip it and `location.replace()` to the clean URL so a mistyped/linked trailing slash silently lands on the right page. Guards: never touch the root `/`, preserve query string + hash, run before content loads, avoid redirect loops. Paired with a **canonical `<link>`** per page for the SEO side. Both are folded into the checklist below (Step 1 + Step 7).
 
-## Preservation Rules (per user)
-- **NEVER delete** `index`, `footer`, `nav`. These are **updated in place** to represent WKND — their content is rewritten, but the files remain.
-- **`header` is no longer protected** — it may be modified, replaced, or deleted freely like any other file.
-- All **other** pages (`t-c`, `about-us`, trendsetters demo content, etc.) may be freely modified, replaced, or deleted.
-- **Lighthouse target: every core/representative page must score > 90** (Performance, Accessibility, Best Practices, SEO). Design and block work must actively protect this — no regressions.
-- Do **not** delete anything required by EDS, DA, CI, or the build (`scripts/aem.js`, `head.html`, block boilerplate, config).
+> **Execution requires Execute mode.** All steps below are write/execution actions.
 
-## Lighthouse > 90 — Guardrails (applied throughout)
-- **Performance:** properly sized/responsive images with `width`+`height` (no CLS), lazy-load below-the-fold, eager-load only the LCP hero image, keep `styles.css` lean, defer non-critical work to `delayed.js`, no render-blocking third-party scripts.
-- **Accessibility:** real `alt` text on all images, sufficient colour contrast for WKND palette, labelled nav/landmarks, logical heading order, focus-visible states on links/buttons.
-- **Best Practices / SEO:** valid metadata (title/description) per page, no console errors, HTTPS asset URLs, canonical + `lang` correct.
-- **Verification:** run a Lighthouse/PSI check on homepage + each representative page in preview; treat < 90 as a blocker to fix before marking that item done.
+## Starting State (from Phase 1 — do NOT redo)
+- **Migrated & rendering** under `/content/us/en`: homepage, magazine listing, article detail (arctic-surfing), adventures listing, adventure detail (climbing-new-zealand), faqs. Header/nav/footer are WKND.
+- **Infra built:** blocks `carousel-hero` (+ reused columns-intro, cards-article, hero-overlay, accordion-faq); parsers `tools/importer/parsers/wknd-*.js`; transformer `wknd-cleanup.js`; per-template import scripts `tools/importer/import-<template>.js` (+ bundles).
+- **Preview quirk:** `aem up` serves local content under the **`/content/`** prefix (`http://localhost:3000/content/us/en`).
+- **Known carry-over defects to fix first (Phase 1 PARTIALs):**
+  1. `about-us` imported at ~56% (contributor/guide cards not parsed).
+  2. Homepage "Where do you want to go?" second adventure-card list renders **text-only** (images not attached).
+  3. Article-detail has a duplicate H3 title + empty paragraphs from the content-fragment wrapper.
 
-## Scope Boundaries
-- Discover and build **representative** pages only — one per template. **No bulk import** in Phase 1.
-- Obsolete demo/starter pages (`t-c`, unrelated trendsetters demo content) may be replaced/removed once WKND equivalents exist — but never `index`, `footer`, `nav`.
+## Gaps / Deltas vs your list (all reconciled — nothing dropped)
+- **Trailing-slash normalization + canonical URLs** — added per your idea (Step 1 + Step 7).
+- **Lighthouse target:** your Phase 2 asks for **Perf 100 / A11y 100**. No Lighthouse CLI exists in this environment (confirmed in Phase 1). I'll install/attempt a real run against the local preview; if the CLI can't run, I mark Lighthouse **BLOCKED** with the exact reason and still fix every practical signal it scores (CLS aspect-ratios, alt text, LCP eager, no console errors, metadata, canonical) — I will **not** fabricate a score.
+- **Block/Page Critique:** I'll use the `excat:excat-visual-critique` skill against the live WKND source; ~85%+ similarity is the target, findings applied. Real screenshots only.
+- **DA/PR:** deferred per your choice (BLOCKED, not attempted).
 
 ## Checklist
 
-### 1. Site Scope / Site Catalog (EMA)
-- [ ] Run `excat:excat-site-scope` on `https://wknd.site/us/en.html`
-- [ ] Discover URLs (sitemap/crawl) and inventory pages, templates, block variants, nav, header, footer, page relationships
-- [ ] Generate the Site Scope catalog report (verify report file is written)
-- [ ] Identify **every meaningful page template** (expected: Home, Magazine/Article-listing, Article-detail, Adventure/Product-detail, Landing/Generic, plus About/Faqs)
+### 1. Fix Phase 1 PARTIAL/FAIL items first (+ trailing-slash UX)
+- [ ] Write an `about-us` parser (contributor + guide cards) → re-import → raise completeness toward ~90%+
+- [ ] Fix homepage second adventure-cards list so images attach (parser/selector tweak) → re-import → verify in preview
+- [ ] Clean article-detail duplicate H3 + empty paragraphs (parser/transformer) → re-import
+- [ ] **Add trailing-slash normalizer in `scripts.js`**: strip a trailing `/` on non-root paths and `location.replace()` to the clean URL (preserve `?query`/`#hash`, skip root, no redirect loop); verify `/us/en/` → `/us/en` and a deep page e.g. `/us/en/magazine/` → `/us/en/magazine`
+- [ ] Re-verify each fixed page renders correctly in preview
 
-### 2. Design Migration (EMA)
-- [ ] Run `excat:excat-complete-design-expert` (site design) against WKND
-- [ ] Update `styles/styles.css` + `styles/brand.css` with WKND colours, typography, spacing, backgrounds, container widths, responsive breakpoints
-- [ ] Update `styles/fonts.css` for WKND fonts (use `font-display: swap`, subset/preload key fonts to protect LCP)
-- [ ] Verify design against rendered preview **and** confirm no Lighthouse Performance/Accessibility regression from styling
+### 2. EMA Bulk Import (`/us/en` only)
+- [ ] Validate a **small set first** (2–3 adventure + 2 magazine URLs) with the existing template bundles; fix any parser/transformer/template issues
+- [ ] Bulk-import **all remaining `/us/en` pages**: 14 remaining adventure-detail + 4 remaining article-detail (via `run-bulk-import.js` + each template's URL list from Site Scope)
+- [ ] Confirm every imported `content/us/en/**/*.plain.html` exists and reports success/completeness
 
-### 3. Update Core Site Chrome (explicit — must visibly change)
-- [ ] **Update `index` content** to represent WKND home (rewrite content; file preserved — never deleted)
-- [ ] **Rebuild `header`** block + content (WKND logo + nav) — header file may be replaced/regenerated freely
-- [ ] **Update `nav`** so top-level items point to real migrated pages (Magazine, Adventures, FAQs, About) — file preserved
-- [ ] **Update `footer`** block + content with WKND footer links — file preserved
-- [ ] Confirm all core chrome is visibly WKND (not boilerplate/trendsetters) in preview
+### 3. Interconnection verification
+- [ ] Header/nav links → migrated pages
+- [ ] Magazine listing cards → article-detail pages (now all exist)
+- [ ] Adventures listing cards → adventure-detail pages (now all exist)
+- [ ] Homepage cards/CTAs, contextual links, footer → resolve (no orphans on core paths)
+- [ ] Re-run the internal-link audit; every `/us/en/*` link resolves to a migrated page
 
-### 4. Handle Existing / Obsolete Content
-- [ ] Inventory current content: `index`, `nav`, `footer`, `t-c`, `about-us` + trendsetters blocks/importer
-- [ ] Reuse blocks that map cleanly to WKND (adapt CSS/parsers); rename/retire trendsetters-specific ones
-- [ ] Remove/replace `t-c` and unrelated demo pages if not part of WKND (`index`, `footer`, `nav` excluded from deletion)
-- [ ] Keep anything required by EDS/DA/CI/build
+### 4. Functional testing (looks-right ≠ works)
+- [ ] Desktop nav links navigate; hero carousel prev/next/dots work
+- [ ] Mobile hamburger opens/closes; menu links navigate
+- [ ] FAQ accordion expands/collapses; buttons/CTAs click through
+- [ ] Trailing-slash redirect actually fires in the browser (not just logic)
+- [ ] Fix any broken interaction found
 
-### 5. Representative Page per Template (EMA Page Migration)
-- [ ] For **each** discovered template, run `excat:excat-site-migration` on one representative URL
-- [ ] Create/fix required **blocks**, **templates**, **parsers**, **transformers** per template
-- [ ] Validate each representative page renders (preview) with correct blocks **and passes Lighthouse > 90**
+### 5. EMA Block + Page Critique (vs WKND source, ~85%+)
+- [ ] Block critique on key blocks (carousel-hero, cards-article, columns-intro, hero-overlay, accordion-faq)
+- [ ] Page critique: homepage, a representative template page, Magazine listing, article detail
+- [ ] Apply fixes; record real similarity scores (no fabrication)
 
-### 6. Magazine + Article Detail
-- [ ] Migrate a **Magazine / article-listing** representative page
-- [ ] Migrate an **article-detail** representative page
-- [ ] Ensure listing cards link to the migrated article-detail page
+### 6. Responsive testing — mobile / tablet / desktop
+- [ ] Test 375 / 768 / 1280 widths: overflow, spacing, typography, grids, images, header, footer
+- [ ] Fix regressions at each breakpoint
 
-### 7. Page Structure & Interlinking
-- [ ] Create the required page/folder structure for representatives
-- [ ] Wire navigation, cards, CTAs, and internal links to **actual migrated pages** (no orphan links)
+### 7. Lighthouse + SEO (homepage + article detail)
+- [ ] Add canonical `<link>` per page (SEO; complements the trailing-slash normalizer)
+- [ ] Attempt real Lighthouse run against local preview; target Perf 100 / A11y 100, good LCP/CLS
+- [ ] Fix practical issues (image dims/CLS, contrast, metadata, console errors, canonical)
+- [ ] If CLI unavailable → mark **BLOCKED** with reason + list verified signals (never fabricate)
 
-### 8. Cross-Device, Link & Lighthouse Verification
-- [ ] Preview desktop + mobile: header, navigation (menu/megamenu), buttons, links, footer
-- [ ] Confirm no important dead clicks or placeholder `#` links on core paths
-- [ ] Run Lighthouse/PSI on homepage + each representative page; confirm **all four categories > 90**; fix any that fall short
+### 8. Document Authoring sync/publish — **BLOCKED (deferred by user)**
+- [ ] (Deferred) POST content to `admin.da.live`, preview + publish, verify EDS URL — skipped this phase
 
-### 9. Final Verification & Report
-- [ ] Verify each Phase-1 completion criterion via **rendered preview** (not file existence)
-- [ ] Record Lighthouse scores as evidence
-- [ ] Produce PASS / PARTIAL / FAIL / BLOCKED table with evidence
-- [ ] List what Phase 2 still needs (bulk import, remaining pages, DA publish, PR link)
+### 9. Lint
+- [ ] Run project lint (ESLint + stylelint); fix failures on touched blocks/scripts/CSS (incl. the `scripts.js` normalizer)
+- [ ] Preserve GitHub CI/build/release compatibility (no vendored-file edits, `.hlxignore` respected)
 
-## Execution Order (dependency-aware)
-1. Site Scope → produces the catalog that drives everything else
-2. Design Migration → global styles before page rendering looks right (Lighthouse-safe)
-3. Core chrome (`header` rebuilt; `nav`/`footer` updated in place) + `index` → shared across all pages
-4. Representative pages per template (incl. Magazine listing + article detail) → blocks/parsers/transformers
-5. Interlinking → point nav/cards/CTAs at real pages
-6. Cross-device + link + Lighthouse testing → rendered previews
-7. Final PASS/PARTIAL/FAIL/BLOCKED report with scores
+### 10. Ship — **BLOCKED (deferred by user)**
+- [ ] (Deferred) Feature branch → commits → GitHub PR (never commit to main) — skipped this phase
 
-## Phase 1 Definition of Done (verified via preview)
-- [ ] Site Scope report exists
-- [ ] Design Migration completed
-- [ ] `index`/homepage visibly migrated (file preserved)
-- [ ] `header` visibly migrated
-- [ ] navigation works (`nav` file preserved)
-- [ ] `footer` visibly migrated (file preserved)
-- [ ] representative page for every discovered template works
-- [ ] Magazine listing + article detail work
-- [ ] required blocks/parsers/templates exist
-- [ ] representative pages are interconnected
-- [ ] obsolete starter content handled appropriately
-- [ ] homepage + every representative page score **> 90** on Lighthouse (all four categories)
+### 11. Final report
+- [ ] Produce the exact `| Requirement | PASS/PARTIAL/FAIL/BLOCKED | Evidence |` table
+- [ ] Provide: Pages discovered/migrated · Critique results · Lighthouse results · DA/EDS URL · Branch · PR · Unresolved items
+
+## Execution Order
+1. Fix Phase-1 PARTIALs + trailing-slash normalizer → clean base
+2. Small-set import validation → fix infra → full `/us/en` bulk import
+3. Interconnection + functional testing
+4. Block/Page critique → apply fixes
+5. Responsive (mobile/tablet/desktop) fixes
+6. Lighthouse + SEO (canonical) — attempt real; else BLOCKED + practical fixes
+7. Lint
+8. Final report (DA publish + PR reported BLOCKED/deferred)
+
+## Final Check (your list — status intent)
+- [ ] all applicable `/us/en` pages imported
+- [ ] index/home correct
+- [ ] header/nav correct and functional
+- [ ] footer correct and functional
+- [ ] Magazine + article pages present
+- [ ] pages correctly interlinked
+- [ ] no important dead clicks
+- [ ] trailing-slash URLs normalize to canonical (bonus UX/SEO, per your request)
+- [ ] Block/Page Critique completed and fixes applied
+- [ ] ~85%+ visual similarity targeted
+- [ ] mobile/tablet/desktop verified
+- [ ] Lighthouse tested (or BLOCKED with reason)
+- [ ] content in Document Authoring — **BLOCKED (deferred)**
+- [ ] da.live preview/publish verified — **BLOCKED (deferred)**
+- [ ] lint passes
+- [ ] feature branch + PR created — **BLOCKED (deferred)**
+- [ ] final EDS URL works — **BLOCKED (deferred, depends on DA publish)**
 
 ## Risks / Watch-items
-- **Source mismatch:** existing repo is `wknd-trendsetters`; source specified is classic `wknd.site`. Plan migrates classic WKND and retires trendsetters leftovers.
-- **Preserved files:** only `index`, `footer`, `nav` are protected from deletion (edited in place). `header` may be freely rebuilt/replaced.
-- **Lighthouse discipline:** image sizing, lazy/eager loading, font loading, and console cleanliness must be handled during build, not retrofitted — retrofitting late risks blocking Done.
-- Bot-protection on source → use `excat:excat-scrape-webpage` (Bright Data fallback).
-- Do not bulk-import (Phase 2). Keep representatives only.
-- All content edits go through the bundled import script + `run-bulk-import.js`, never hand-written HTML into the content dir.
+- **Trailing-slash redirect safety:** must skip root `/`, preserve query/hash, and avoid redirect loops; test on a deep path, not just `/us/en`. Note the local `/content/` prefix when verifying, but the rule targets production-style paths.
+- **Locale scope fixed to `/us/en`** — other locales intentionally excluded.
+- **No hand-written content** — all content changes go through import scripts + `run-bulk-import.js`; `content/` deletion is blocked by policy (regenerate instead).
+- **Lighthouse CLI likely absent** — will attempt; BLOCKED-with-reason if it can't run, never faked.
+- **DA + PR need credential opt-ins** — deferred by user; will not attempt this phase.
+- **Don't regress Phase 1** — reuse working blocks/parsers; only touch what a fix requires. Respect the intentional lint-normalized CSS already in `styles.css` / `brand.css` / `carousel-hero.css`.
 
 ---
 
-**Execution requires Execute mode.** On approval I'll start with the Site Scope run on `wknd.site/us/en.html`, then work down the checklist — preserving (never deleting) `index`, `footer`, `nav`, rebuilding `header` freely, and verifying both rendering and Lighthouse > 90 in the live preview before marking each item done.
+**No gaps between your Phase 2 and mine.** Differences are only the choices you made: `/us/en` only, DA-publish + PR deferred (reported BLOCKED), plus your trailing-slash normalization idea now folded in as a first-class task. On approval in Execute mode, I'll start by fixing the Phase-1 PARTIALs and adding the trailing-slash redirect, then validate a small import set before the full `/us/en` bulk import, and work down to the final PASS/PARTIAL/FAIL/BLOCKED table.
