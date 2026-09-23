@@ -32,7 +32,7 @@
 }
 
 /* Title — source .cmp-image-list__item-title link: 18px / 400 / normal-case /
-   WKND blue #0045ff. Scoped to the base (article/adventure) grid so the
+   dark #202020. Scoped to the base (article/adventure) grid so the
    .contributors variant keeps its serif name styling. */
 .cards-article:not(.contributors) .cards-article-card-body h3 {
   margin: 0;
@@ -41,16 +41,16 @@
   font-weight: 400;
   line-height: 27px;
   text-transform: none;
-  color: var(--wknd-link-blue);
+  color: var(--text-color);
 }
 
 .cards-article:not(.contributors) .cards-article-card-body h3 a:any-link {
-  color: var(--wknd-link-blue);
+  color: var(--text-color);
   text-decoration: none;
 }
 
 .cards-article:not(.contributors) .cards-article-card-body h3 a:hover {
-  color: var(--wknd-link-blue);
+  color: var(--text-color);
   text-decoration: underline;
 }
 
