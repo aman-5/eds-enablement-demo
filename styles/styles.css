@@ -47,7 +47,10 @@
 @media (width >= 900px) {
   :root {
     /* heading sizes (desktop, from WKND extraction) */
-    --heading-font-size-xxl: 54px;
+
+    /* xxl = page-title h1 (Adventures, FAQs, About Us, article & adventure
+       titles). Source renders these at 40px, not the earlier 54px. */
+    --heading-font-size-xxl: 40px;
     --heading-font-size-xl: 36px;
     --heading-font-size-l: 24px;
     --heading-font-size-m: 18px;
@@ -395,4 +398,20 @@ main .section.inverse h4,
 main .section.inverse h5,
 main .section.inverse h6 {
   color: var(--background-color);
+}
+
+/*
+ * In-content prose links (FAQ answers, article body, magazine copy) render in
+ * WKND blue on the source. Scoped to default-content paragraphs/lists and
+ * excludes the standalone yellow-button CTAs (single-child links) styled above.
+ */
+/* stylelint-disable-next-line no-descending-specificity */
+main .default-content-wrapper :is(p, li) a:any-link:not(:only-child) {
+  color: var(--wknd-link-blue);
+  text-decoration: none;
+}
+
+main .default-content-wrapper :is(p, li) a:any-link:not(:only-child):hover {
+  color: var(--wknd-link-blue);
+  text-decoration: underline;
 }

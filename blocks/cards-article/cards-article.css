@@ -72,3 +72,84 @@
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   .contributors variant — people cards (About Us: Our Contributors, WKND Guides)
+   Source of truth: wknd.site .cmp-experience-fragment--contributor.
+   Circular 164x164 avatar, centered serif name, uppercase role, social link row.
+   Scoped so the base article/adventure grid is unaffected.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.cards-article.contributors > ul > li {
+  text-align: center;
+}
+
+/* circular avatar — source img: 164x164, object-fit cover, border-radius 50% */
+.cards-article.contributors .cards-article-card-image {
+  display: flex;
+  justify-content: center;
+}
+
+.cards-article.contributors .cards-article-card-image img {
+  width: 164px;
+  height: 164px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.cards-article.contributors .cards-article-card-body {
+  margin: 16px 0 0;
+}
+
+/* name — source h3.cmp-title__text: Asar 24px / 400 / 36px / #202020, no transform */
+.cards-article.contributors .cards-article-card-body h3 {
+  margin: 0 0 6px;
+  font-family: var(--heading-font-family);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 36px;
+  text-transform: none;
+  color: var(--text-color);
+}
+
+/* role — source h5.cmp-title__text: Source Sans 14px / 600 / uppercase / #202020.
+   Reset the base description's nowrap/ellipsis truncation. */
+.cards-article.contributors .cards-article-card-body p {
+  margin: 0 0 4px;
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
+  color: var(--text-color);
+  text-transform: uppercase;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+/* social links row — the card-body paragraph holding the 3 social anchors.
+   Source renders icon-font buttons (wknd-icon-font, #ebebeb); we don't have
+   that font, so render tasteful muted text links in a centered horizontal row. */
+.cards-article.contributors .cards-article-card-body p:has(a) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px;
+  margin: 12px 0 0;
+  text-transform: none;
+}
+
+.cards-article.contributors .cards-article-card-body p:has(a) a:any-link {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--mid-color);
+}
+
+.cards-article.contributors .cards-article-card-body p:has(a) a:hover {
+  color: var(--text-color);
+  text-decoration: none;
+}

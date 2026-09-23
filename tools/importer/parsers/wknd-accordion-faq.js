@@ -20,6 +20,11 @@ export default function parse(element, { document }) {
     if (panel) {
       // move panel content (strip the wrapper's hidden class)
       a.append(...panel.childNodes);
+      // Source rich text leaves an empty heading (e.g. <h3 id=""></h3>) in some
+      // answer panels — drop empties so they don't render as blank gaps.
+      a.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach((h) => {
+        if (!h.textContent.trim() && !h.querySelector('img')) h.remove();
+      });
     }
 
     cells.push([q, a]);

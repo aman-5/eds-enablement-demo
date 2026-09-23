@@ -35,13 +35,13 @@ var CustomImportScript = (() => {
   };
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // tools/importer/import-faqs.js
+  // import-faqs.js
   var import_faqs_exports = {};
   __export(import_faqs_exports, {
     default: () => import_faqs_default
   });
 
-  // tools/importer/parsers/wknd-accordion-faq.js
+  // parsers/wknd-accordion-faq.js
   function parse(element, { document }) {
     const items = Array.from(element.querySelectorAll(".cmp-accordion__item"));
     const cells = [];
@@ -53,6 +53,9 @@ var CustomImportScript = (() => {
       const a = document.createElement("div");
       if (panel) {
         a.append(...panel.childNodes);
+        a.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach((h) => {
+          if (!h.textContent.trim() && !h.querySelector("img")) h.remove();
+        });
       }
       cells.push([q, a]);
     });
@@ -64,7 +67,7 @@ var CustomImportScript = (() => {
     element.replaceWith(block);
   }
 
-  // tools/importer/transformers/wknd-cleanup.js
+  // transformers/wknd-cleanup.js
   var TransformHook = { beforeTransform: "beforeTransform", afterTransform: "afterTransform" };
   function rewriteLinks(element) {
     element.querySelectorAll("a[href]").forEach((a) => {
@@ -106,7 +109,15 @@ var CustomImportScript = (() => {
         ".cmp-layoutcontainer--sidebar",
         '[class*="sidebar"]',
         ".social",
-        ".cmp-sharing"
+        ".cmp-sharing",
+        // Content-fragment internal title duplicates the page H1 — drop it
+        ".cmp-contentfragment__title",
+        // Carousel prev/next/indicator chrome leaks as "Previous Next" text
+        ".cmp-carousel__actions",
+        ".cmp-carousel__action",
+        ".cmp-carousel__indicators",
+        ".cmp-tabs__tablist",
+        ".cmp-image-list__item-button"
       ]);
     }
     if (hookName === TransformHook.afterTransform) {
@@ -114,7 +125,7 @@ var CustomImportScript = (() => {
     }
   }
 
-  // tools/importer/import-faqs.js
+  // import-faqs.js
   var parsers = { "accordion-faq": parse };
   var PAGE_TEMPLATE = {
     name: "faqs",

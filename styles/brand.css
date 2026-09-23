@@ -10,13 +10,14 @@
   --link-hover-color: #000;
   --accent-color: #ffea00;
   --accent-hover-color: #ffd400;
+  --wknd-link-blue: #0045ff;
   --light-color: #ebebeb;
   --mid-color: #afafaf;
   --dark-color: #202020;
 
   /* spacing */
   --section-padding: 60px;
-  --content-max-width: 1136px;
+  --content-max-width: 1164px;
   --nav-height: 193px;
 
   /* heading sizes (desktop, from WKND extraction) */
