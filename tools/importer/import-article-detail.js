@@ -6,6 +6,7 @@
 // and the article body flows as default content.
 
 import cleanupTransformer from './transformers/wknd-cleanup.js';
+import authorBioParser from './parsers/wknd-author-bio.js';
 
 const PAGE_TEMPLATE = {
   name: 'article-detail',
@@ -20,8 +21,22 @@ export default {
     const { document, url, params } = payload;
     const main = document.body;
 
+    // author-bio must run before cleanup strips .experiencefragment/byline.
+    try { authorBioParser(main, { document, url, params }); } catch (e) { console.error('author-bio parser failed:', e); }
+
     cleanupTransformer('beforeTransform', main, { ...payload, template: PAGE_TEMPLATE });
     cleanupTransformer('afterTransform', main, { ...payload, template: PAGE_TEMPLATE });
+
+    // Tag the whole article as a constrained-reading-measure section so the
+    // body copy + inline images pick up the magazine typography (narrow column,
+    // airy leading) via styles.css .section.article.
+    try {
+      const meta = WebImporter.Blocks.createBlock(document, {
+        name: 'Section Metadata',
+        cells: { style: 'article' },
+      });
+      main.appendChild(meta);
+    } catch (e) { console.error('article section meta failed:', e); }
 
     const hr = document.createElement('hr');
     main.appendChild(hr);

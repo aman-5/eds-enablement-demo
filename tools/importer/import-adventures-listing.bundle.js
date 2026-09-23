@@ -35,13 +35,13 @@ var CustomImportScript = (() => {
   };
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // tools/importer/import-adventures-listing.js
+  // import-adventures-listing.js
   var import_adventures_listing_exports = {};
   __export(import_adventures_listing_exports, {
     default: () => import_adventures_listing_default
   });
 
-  // tools/importer/parsers/wknd-columns-intro.js
+  // parsers/wknd-columns-intro.js
   function parse(element, { document }) {
     const teaser = element.querySelector(".cmp-teaser") || element;
     const img = teaser.querySelector("img");
@@ -81,7 +81,7 @@ var CustomImportScript = (() => {
     element.replaceWith(block);
   }
 
-  // tools/importer/parsers/wknd-cards-article.js
+  // parsers/wknd-cards-article.js
   function parse2(element, { document }) {
     const items = Array.from(element.querySelectorAll(".cmp-image-list__item"));
     const cells = [];
@@ -114,7 +114,42 @@ var CustomImportScript = (() => {
     element.replaceWith(block);
   }
 
-  // tools/importer/transformers/wknd-cleanup.js
+  // parsers/wknd-hero-overlay.js
+  function parse3(element, { document }) {
+    const teaser = element.querySelector(".cmp-teaser") || element;
+    const img = teaser.querySelector("img");
+    const title = teaser.querySelector(".cmp-teaser__title");
+    const desc = teaser.querySelector(".cmp-teaser__description");
+    const cta = teaser.querySelector(".cmp-teaser__action-link, .cmp-button");
+    const cells = [];
+    cells.push([img || document.createTextNode("")]);
+    const content = [];
+    if (title) {
+      const h = document.createElement("h2");
+      h.textContent = title.textContent.trim();
+      content.push(h);
+    }
+    if (desc) {
+      const p = document.createElement("p");
+      p.textContent = desc.textContent.trim();
+      content.push(p);
+    }
+    if (cta) {
+      const a = document.createElement("a");
+      a.href = cta.getAttribute("href") || "#";
+      a.textContent = cta.textContent.trim();
+      content.push(a);
+    }
+    if (!img && !content.length) {
+      element.replaceWith(...element.childNodes);
+      return;
+    }
+    cells.push([content.length ? content : document.createTextNode("")]);
+    const block = WebImporter.Blocks.createBlock(document, { name: "hero-overlay", cells });
+    element.replaceWith(block);
+  }
+
+  // transformers/wknd-cleanup.js
   var TransformHook = { beforeTransform: "beforeTransform", afterTransform: "afterTransform" };
   function rewriteLinks(element) {
     element.querySelectorAll("a[href]").forEach((a) => {
@@ -172,12 +207,18 @@ var CustomImportScript = (() => {
     }
   }
 
-  // tools/importer/import-adventures-listing.js
-  var parsers = { "columns-intro": parse, "cards-article": parse2 };
+  // import-adventures-listing.js
+  var parsers = {
+    "columns-intro": parse,
+    "cards-article": parse2,
+    "hero-overlay": parse3
+  };
   var PAGE_TEMPLATE = {
     name: "adventures-listing",
     urls: ["https://wknd.site/us/en/adventures.html"],
     blocks: [
+      // Full-bleed intro teaser ("Experience the world with us") -> hero-overlay.
+      { name: "hero-overlay", instances: [".teaser.cmp-teaser--hero"] },
       { name: "columns-intro", instances: [".teaser.cmp-teaser--featured", ".teaser.cmp-teaser--content"] },
       { name: "cards-article", instances: ["ul.cmp-image-list"] }
     ],

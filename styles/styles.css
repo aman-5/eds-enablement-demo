@@ -415,3 +415,70 @@ main .default-content-wrapper :is(p, li) a:any-link:not(:only-child):hover {
   color: var(--wknd-link-blue);
   text-decoration: underline;
 }
+
+/*
+ * Two-column body layout (WKND adventure detail). The page title spans full
+ * width; the trip-details + share wrappers form a left sidebar and the tabs
+ * wrapper the wider right column. Mobile: single column, stacked.
+ */
+@media (width >= 900px) {
+  main > .section.two-column {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    column-gap: 48px;
+    align-items: start;
+    max-width: var(--content-max-width);
+    margin-inline: auto;
+    padding: 0 32px;
+  }
+
+  /* wrappers are the grid items; reset their own centering/padding */
+  main > .section.two-column > div {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* page title spans both columns */
+  main > .section.two-column > .default-content-wrapper:has(h1) {
+    grid-column: 1 / -1;
+  }
+
+  /* left sidebar: trip-details, the "Share this Adventure" heading, share links */
+  main > .section.two-column > .trip-details-wrapper,
+  main > .section.two-column > .share-wrapper,
+  main > .section.two-column > .default-content-wrapper:not(:has(h1)) {
+    grid-column: 1;
+  }
+
+  /* right column: the tabs, spanning the sidebar rows */
+  main > .section.two-column > .tabs-wrapper {
+    grid-column: 2;
+    grid-row: 2 / 100;
+  }
+}
+
+/*
+ * Article reading measure (WKND magazine article-detail). Constrain the body
+ * copy to ~776px with airy leading; the title/hero image stay wider. Matches
+ * the source magazine layout.
+ */
+main > .section.article > .default-content-wrapper {
+  max-width: 776px;
+}
+
+main > .section.article > .default-content-wrapper p {
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+/* inline article images stay within the reading column */
+main > .section.article > .default-content-wrapper p img {
+  width: 100%;
+  height: auto;
+}
+
+/* the author-bio block keeps its own (narrow) width alignment */
+main > .section.article > .author-bio-wrapper {
+  max-width: 776px;
+}

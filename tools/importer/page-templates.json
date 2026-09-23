@@ -8,7 +8,11 @@
       ],
       "coverageGaps": [],
       "description": "Content landing/listing page with heading intro and stacked article/teaser groups",
-      "blocks": []
+      "blocks": [
+        { "name": "columns-intro", "instances": [".teaser.cmp-teaser--featured", ".teaser.cmp-teaser--list"] },
+        { "name": "cards-article", "instances": ["ul.cmp-image-list"] },
+        { "name": "cards-article (contributors)", "instances": [".cmp-experience-fragment--contributor"] }
+      ]
     },
     {
       "name": "adventure-detail",
@@ -32,7 +36,12 @@
       ],
       "coverageGaps": [],
       "description": "Detail page with hero image, intro copy, contributor/meta sidebar and related items",
-      "blocks": []
+      "blocks": [
+        { "name": "carousel-hero", "instances": [".carousel.cmp-carousel--hero", ".carousel.cmp-carousel--mini", ".carousel.cmp-carousel"] },
+        { "name": "trip-details", "instances": ["dl.cmp-contentfragment__elements"] },
+        { "name": "share", "instances": [".sharing"] },
+        { "name": "tabs", "instances": [".cmp-tabs"] }
+      ]
     },
     {
       "name": "adventures-listing",
@@ -41,7 +50,11 @@
       ],
       "coverageGaps": [],
       "description": "Listing page with a grid of adventure teaser cards",
-      "blocks": []
+      "blocks": [
+        { "name": "hero-overlay", "instances": [".teaser.cmp-teaser--hero"] },
+        { "name": "columns-intro", "instances": [".teaser.cmp-teaser--featured", ".teaser.cmp-teaser--content"] },
+        { "name": "cards-article", "instances": ["ul.cmp-image-list"] }
+      ]
     },
     {
       "name": "faqs",
@@ -50,7 +63,9 @@
       ],
       "coverageGaps": [],
       "description": "FAQ page with accordion-style question and answer list",
-      "blocks": []
+      "blocks": [
+        { "name": "accordion-faq", "instances": [".cmp-accordion"] }
+      ]
     },
     {
       "name": "homepage",
@@ -78,7 +93,9 @@
       ],
       "coverageGaps": [],
       "description": "Long-form article page with hero, author metadata and body copy sections",
-      "blocks": []
+      "blocks": [
+        { "name": "author-bio", "instances": [".cmp-byline"] }
+      ]
     }
   ],
   "metadata": {

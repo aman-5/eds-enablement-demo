@@ -46,6 +46,12 @@ export default function decorate(block) {
   block.textContent = '';
   block.append(container);
 
+  // Gallery mode: when no slide carries text content (adventure-detail image
+  // gallery), mark the block so its CSS drops the homepage white content box.
+  const hasText = [...container.querySelectorAll('.carousel-hero-content')]
+    .some((c) => c.textContent.trim().length > 0);
+  if (!hasText) block.classList.add('carousel-hero-gallery');
+
   if (slides.length <= 1) return;
 
   // controls
