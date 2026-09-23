@@ -35,13 +35,13 @@ var CustomImportScript = (() => {
   };
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // tools/importer/import-adventure-detail.js
+  // import-adventure-detail.js
   var import_adventure_detail_exports = {};
   __export(import_adventure_detail_exports, {
     default: () => import_adventure_detail_default
   });
 
-  // tools/importer/parsers/wknd-carousel-hero.js
+  // parsers/wknd-carousel-hero.js
   function parse(element, { document }) {
     const items = Array.from(element.querySelectorAll(".cmp-carousel__item"));
     const cells = [];
@@ -79,7 +79,7 @@ var CustomImportScript = (() => {
     element.replaceWith(block);
   }
 
-  // tools/importer/transformers/wknd-cleanup.js
+  // transformers/wknd-cleanup.js
   var TransformHook = { beforeTransform: "beforeTransform", afterTransform: "afterTransform" };
   function rewriteLinks(element) {
     element.querySelectorAll("a[href]").forEach((a) => {
@@ -137,13 +137,13 @@ var CustomImportScript = (() => {
     }
   }
 
-  // tools/importer/import-adventure-detail.js
+  // import-adventure-detail.js
   var parsers = { "carousel-hero": parse };
   var PAGE_TEMPLATE = {
     name: "adventure-detail",
     urls: ["https://wknd.site/us/en/adventures/climbing-new-zealand.html"],
     blocks: [
-      { name: "carousel-hero", instances: [".carousel.cmp-carousel"] }
+      { name: "carousel-hero", instances: [".carousel.cmp-carousel--hero", ".carousel.cmp-carousel--mini", ".carousel.cmp-carousel"] }
     ],
     sections: []
   };

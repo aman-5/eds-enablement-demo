@@ -1,120 +1,113 @@
-/* hero-overlay -- full-bleed closing hero: background image, dark gradient
-   overlay, light heading + subheading + CTA anchored over the image.
-   Values extracted from wknd-trendsetters.site/about-us computed styles. */
+/* hero-overlay -- "imagebottom" teaser: full-width image on TOP, then
+   heading + description + CTA BELOW on a plain white background with dark
+   text, left-aligned. Values extracted from the WKND classic source
+   (.cmp-teaser--hero.cmp-teaser--imagebottom on wknd.site/us/en). */
 
 .hero-overlay {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;   /* content anchored to bottom */
-  min-height: 448px;
-  border-radius: 20px;
-  overflow: hidden;            /* clip image + gradient to rounded corners */
-  color: var(--background-color);
+  display: block;
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
-/* Row 1: background image cell -- absolute fill behind everything */
+/* Row 1: image -- full width of the block, cover-cropped to ~2.25:1 */
 .hero-overlay > div:first-child {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
   margin: 0;
 }
 
-.hero-overlay > div:first-child > div,
+.hero-overlay > div:first-child > div {
+  margin: 0;
+}
+
 .hero-overlay picture {
-  position: absolute;
-  inset: 0;
   display: block;
+  width: 100%;
+  line-height: 0;
 }
 
 .hero-overlay img {
+  display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
+  aspect-ratio: 2.25 / 1;
   object-fit: cover;
+  border-radius: 0;
 }
 
-/* Dark gradient overlay above the image, below the content */
-.hero-overlay::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background-image: linear-gradient(to top, rgb(0 0 0 / 70%) 0%, rgb(0 0 0 / 0%) 60%);
-}
-
-/* Row 2: content cell (card-body) */
+/* Row 2: text content below the image */
 /* stylelint-disable-next-line no-descending-specificity */
 .hero-overlay > div:last-child {
-  position: relative;
-  z-index: 2;
   margin: 0;
 }
 
 .hero-overlay > div:last-child > div {
-  max-width: 672px;
-  padding: 64px;
+  margin: 0;
+  padding: 0;
+  text-align: left;
 }
 
 .hero-overlay h2 {
-  margin: 0;
+  margin: 20px 0 0;
   font-family: var(--heading-font-family);
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 30.8px;
-  letter-spacing: -0.56px;
-  text-transform: uppercase;
-  color: var(--background-color);
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text-color);
 }
 
 .hero-overlay p {
-  margin: 16px 0 0;
+  margin: 8px 0 0;
   font-family: var(--body-font-family);
   font-size: 18px;
-  line-height: 28.8px;
-  color: var(--background-color);
+  font-weight: 400;
+  line-height: 1.75;
+  color: var(--text-color);
 }
 
-/* CTA -- solid white pill on the image */
+/* CTA "See Trip" -- WKND signature yellow, square corners, uppercase.
+   Matches the site's standard a.button (styles.css). Links inside this block
+   are not auto-decorated with .button, so style the anchor directly. */
+.hero-overlay p:last-child {
+  margin-top: 18px;
+}
+
 .hero-overlay a:any-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-top: 24px;
-  padding: 12px 24px;
-  border: 2px solid var(--background-color);
-  border-radius: 9999px;
-  background-color: var(--background-color);
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 14px 35px;
+  background-color: var(--accent-color);
   color: var(--text-color);
   font-family: var(--body-font-family);
   font-size: 14px;
   font-weight: 600;
-  line-height: 1.25;
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.hero-overlay a:hover,
+.hero-overlay a:focus-visible {
+  background-color: var(--accent-hover-color);
+  color: var(--text-color);
   text-decoration: none;
 }
 
-/* Fallback: no background image -> dark text on light */
-.hero-overlay.no-image {
-  color: var(--text-color);
-}
-
-.hero-overlay.no-image::before {
-  background-image: none;
-}
-
-.hero-overlay.no-image h2,
-.hero-overlay.no-image p {
-  color: var(--text-color);
+/* Fallback: no image -> heading/description/CTA on white, dark text.
+   (Already the default here; keep the hook so decorate()'s class is honored.) */
+.hero-overlay.no-image h2 {
+  margin-top: 0;
 }
 
 @media (width >= 900px) {
-  .hero-overlay {
-    min-height: 448px;
-  }
-
   .hero-overlay h2 {
-    font-size: 56px;
-    line-height: 61.6px;
-    letter-spacing: -1.12px;
+    font-size: 36px;
+    line-height: 1.5;
   }
 }

@@ -35,13 +35,13 @@ var CustomImportScript = (() => {
   };
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // tools/importer/import-content-listing.js
+  // import-content-listing.js
   var import_content_listing_exports = {};
   __export(import_content_listing_exports, {
     default: () => import_content_listing_default
   });
 
-  // tools/importer/parsers/wknd-columns-intro.js
+  // parsers/wknd-columns-intro.js
   function parse(element, { document: document2 }) {
     const teaser = element.querySelector(".cmp-teaser") || element;
     const img = teaser.querySelector("img");
@@ -81,7 +81,7 @@ var CustomImportScript = (() => {
     element.replaceWith(block);
   }
 
-  // tools/importer/parsers/wknd-cards-article.js
+  // parsers/wknd-cards-article.js
   function parse2(element, { document: document2 }) {
     const items = Array.from(element.querySelectorAll(".cmp-image-list__item"));
     const cells = [];
@@ -114,12 +114,19 @@ var CustomImportScript = (() => {
     element.replaceWith(block);
   }
 
-  // tools/importer/parsers/wknd-about-cards.js
+  // parsers/wknd-about-cards.js
   function parse3(element, { document: document2 }) {
     const cards = Array.from(element.querySelectorAll(".cmp-experience-fragment--contributor"));
     if (!cards.length) return;
-    const cells = [];
+    const guidesHeading = Array.from(element.querySelectorAll("h2")).find((h) => /wknd\s+guides/i.test(h.textContent || ""));
+    const isAfter = (node, ref) => ref && node.compareDocumentPosition(ref) & Node.DOCUMENT_POSITION_PRECEDING;
+    const contributors = [];
+    const guides = [];
     cards.forEach((card) => {
+      (guidesHeading && isAfter(card, guidesHeading) ? guides : contributors).push(card);
+    });
+    const PLATFORMS = ["facebook", "twitter", "instagram"];
+    const buildCell = (card) => {
       const img = card.querySelector("img");
       const name = card.querySelector("h3");
       const role = card.querySelector("h5");
@@ -135,14 +142,40 @@ var CustomImportScript = (() => {
         p.textContent = role.textContent.trim();
         body.push(p);
       }
-      cells.push([imageCell, body.length ? body : document2.createTextNode("")]);
-    });
-    const block = WebImporter.Blocks.createBlock(document2, { name: "cards-article", cells });
-    cards[0].before(block);
-    cards.forEach((c) => c.remove());
+      const socialLinks = [];
+      PLATFORMS.forEach((platform) => {
+        const btn = card.querySelector(`.cmp-button__icon--${platform}`);
+        const anchor = btn && btn.closest("a");
+        if (!anchor) return;
+        const a = document2.createElement("a");
+        a.href = anchor.getAttribute("href") || "#";
+        a.textContent = platform.charAt(0).toUpperCase() + platform.slice(1);
+        a.setAttribute("data-social", platform);
+        socialLinks.push(a);
+      });
+      if (socialLinks.length) {
+        const p = document2.createElement("p");
+        p.className = "cards-article-social";
+        socialLinks.forEach((a) => p.append(a));
+        body.push(p);
+      }
+      return [imageCell, body.length ? body : document2.createTextNode("")];
+    };
+    const insertBlock = (group) => {
+      if (!group.length) return;
+      const cells = group.map(buildCell);
+      const block = WebImporter.Blocks.createBlock(document2, {
+        name: "cards-article (contributors)",
+        cells
+      });
+      group[0].before(block);
+      group.forEach((c) => c.remove());
+    };
+    insertBlock(contributors);
+    insertBlock(guides);
   }
 
-  // tools/importer/transformers/wknd-cleanup.js
+  // transformers/wknd-cleanup.js
   var TransformHook = { beforeTransform: "beforeTransform", afterTransform: "afterTransform" };
   function rewriteLinks(element) {
     element.querySelectorAll("a[href]").forEach((a) => {
@@ -186,7 +219,13 @@ var CustomImportScript = (() => {
         ".social",
         ".cmp-sharing",
         // Content-fragment internal title duplicates the page H1 — drop it
-        ".cmp-contentfragment__title"
+        ".cmp-contentfragment__title",
+        // Carousel prev/next/indicator chrome leaks as "Previous Next" text
+        ".cmp-carousel__actions",
+        ".cmp-carousel__action",
+        ".cmp-carousel__indicators",
+        ".cmp-tabs__tablist",
+        ".cmp-image-list__item-button"
       ]);
     }
     if (hookName === TransformHook.afterTransform) {
@@ -194,7 +233,7 @@ var CustomImportScript = (() => {
     }
   }
 
-  // tools/importer/transformers/wknd-trendsetters-sections.js
+  // transformers/wknd-trendsetters-sections.js
   var SECTION_MARKER_ATTR = "data-excat-section-id";
   function querySection(root, selectors) {
     for (const sel of selectors) {
@@ -236,7 +275,7 @@ var CustomImportScript = (() => {
     }
   }
 
-  // tools/importer/import-content-listing.js
+  // import-content-listing.js
   var parsers = {
     "columns-intro": parse,
     "cards-article": parse2

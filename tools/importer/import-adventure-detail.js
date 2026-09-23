@@ -9,7 +9,7 @@ const PAGE_TEMPLATE = {
   name: 'adventure-detail',
   urls: ['https://wknd.site/us/en/adventures/climbing-new-zealand.html'],
   blocks: [
-    { name: 'carousel-hero', instances: ['.carousel.cmp-carousel'] },
+    { name: 'carousel-hero', instances: ['.carousel.cmp-carousel--hero', '.carousel.cmp-carousel--mini', '.carousel.cmp-carousel'] },
   ],
   sections: [],
 };
