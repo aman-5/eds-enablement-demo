@@ -1,0 +1,10 @@
+{
+  "variantName": "columns-intro",
+  "baseBlock": "columns",
+  "visualCharacteristics": "Two-column intro on a light-grey background: a text column (heading, subheading, two CTA buttons) beside an image group of three stacked images.",
+  "contentPattern": "Row with two cells. Cell one: heading + subheading + CTA links. Cell two: a group of images.",
+  "usage": "Page intro / hero-style two-column layout pairing an editorial text block with an adjacent image group.",
+  "canonicalModel": "standalone",
+  "options": [],
+  "memberVariantIds": ["columns-intro"]
+}

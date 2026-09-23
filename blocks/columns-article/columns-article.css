@@ -1,0 +1,58 @@
+/* columns-article -- values extracted from source computed styles */
+
+/* Row: mobile-first stack, image above text */
+.columns-article > div {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.columns-article > div > div {
+  order: 1;
+}
+
+.columns-article > div > .columns-article-img-col {
+  order: 0;
+}
+
+/* Image: 3:2 crop with rounded corners (source: border-radius 20px, object-fit cover) */
+.columns-article img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+/* Heading: source h2 is the extra-large size (40px desktop / uppercase Syncopate from global) */
+.columns-article h2 {
+  margin: 0;
+  font-size: var(--heading-font-size-xxl);
+  line-height: 1.1;
+}
+
+/* Byline paragraphs: source renders these at 14px; date line is muted grey */
+.columns-article > div > div > p {
+  margin: 16px 0 0;
+  font-size: var(--body-font-size-xs);
+  line-height: 1.6;
+}
+
+.columns-article > div > div > p + p {
+  margin-top: 8px;
+  color: var(--link-color);
+}
+
+@media (width >= 900px) {
+  /* Desktop: two equal columns, vertically centered, 24px gap */
+  .columns-article > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .columns-article > div > div {
+    order: unset;
+  }
+}

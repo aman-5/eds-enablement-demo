@@ -1,0 +1,72 @@
+/*
+ * Accordion FAQ Block
+ * Rounded card items, bold question with a plus icon that rotates to an X when open.
+ * Values extracted from source computed styles.
+ */
+
+.accordion-faq {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--text-color);
+}
+
+/* accordion item = <details> */
+.accordion-faq .accordion-faq-item {
+  border: 1px solid #e8e8e8;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* question = <summary> */
+.accordion-faq .accordion-faq-item-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 32px;
+  font-family: var(--body-font-family);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--text-color);
+  list-style: none;
+  cursor: pointer;
+}
+
+.accordion-faq .accordion-faq-item-label::-webkit-details-marker {
+  display: none;
+}
+
+/* plus icon (two 2px bars), rotates 45deg to form an X when open */
+.accordion-faq .accordion-faq-item-label::after {
+  content: '';
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  background:
+    linear-gradient(currentcolor, currentcolor) center / 2px 100% no-repeat,
+    linear-gradient(currentcolor, currentcolor) center / 100% 2px no-repeat;
+  transition: transform 0.2s ease;
+}
+
+.accordion-faq .accordion-faq-item[open] .accordion-faq-item-label::after {
+  transform: rotate(45deg);
+}
+
+/* answer = body div */
+.accordion-faq .accordion-faq-item-body {
+  padding: 0 32px 32px;
+  font-family: var(--body-font-family);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.7;
+  color: #404040;
+}
+
+.accordion-faq .accordion-faq-item-body p {
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}

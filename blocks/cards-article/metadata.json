@@ -1,0 +1,10 @@
+{
+  "variantName": "cards-article",
+  "baseBlock": "cards",
+  "visualCharacteristics": "Four-column grid of linked article cards, each with a feature image, a tag/category label, a date/meta line, and a bold title. Collapses to two columns then one on smaller screens.",
+  "contentPattern": "One row per card: image cell + body cell containing tag label, meta date, and title (often a link).",
+  "usage": "Latest-articles / blog listing grid linking to individual posts with category tags.",
+  "canonicalModel": "standalone",
+  "options": [],
+  "memberVariantIds": ["cards-article"]
+}
