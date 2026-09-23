@@ -1,147 +1,84 @@
 {
   "templates": [
     {
-      "name": "about-us",
+      "name": "content-listing",
       "urls": [
-        "https://wknd-trendsetters.site/about-us"
+        "https://wknd.site/us/en/about-us.html",
+        "https://wknd.site/us/en/magazine.html"
       ],
-      "representativeUrl": "https://wknd-trendsetters.site/about-us",
-      "description": "",
+      "coverageGaps": [],
+      "description": "Content landing/listing page with heading intro and stacked article/teaser groups",
+      "blocks": []
+    },
+    {
+      "name": "adventure-detail",
+      "urls": [
+        "https://wknd.site/us/en/adventures/bali-surf-camp.html",
+        "https://wknd.site/us/en/adventures/beervana-portland.html",
+        "https://wknd.site/us/en/adventures/climbing-new-zealand.html",
+        "https://wknd.site/us/en/adventures/colorado-rock-climbing.html",
+        "https://wknd.site/us/en/adventures/cycling-southern-utah.html",
+        "https://wknd.site/us/en/adventures/cycling-tuscany.html",
+        "https://wknd.site/us/en/adventures/downhill-skiing-wyoming.html",
+        "https://wknd.site/us/en/adventures/gastronomic-marais-tour.html",
+        "https://wknd.site/us/en/adventures/napa-wine-tasting.html",
+        "https://wknd.site/us/en/adventures/riverside-camping-australia.html",
+        "https://wknd.site/us/en/adventures/ski-touring-mont-blanc.html",
+        "https://wknd.site/us/en/adventures/surf-camp-costa-rica.html",
+        "https://wknd.site/us/en/adventures/tahoe-skiing.html",
+        "https://wknd.site/us/en/adventures/west-coast-cycling.html",
+        "https://wknd.site/us/en/adventures/whistler-mountain-biking.html",
+        "https://wknd.site/us/en/adventures/yosemite-backpacking.html"
+      ],
+      "coverageGaps": [],
+      "description": "Detail page with hero image, intro copy, contributor/meta sidebar and related items",
+      "blocks": []
+    },
+    {
+      "name": "adventures-listing",
+      "urls": [
+        "https://wknd.site/us/en/adventures.html"
+      ],
+      "coverageGaps": [],
+      "description": "Listing page with a grid of adventure teaser cards",
+      "blocks": []
+    },
+    {
+      "name": "faqs",
+      "urls": [
+        "https://wknd.site/us/en/faqs.html"
+      ],
+      "coverageGaps": [],
+      "description": "FAQ page with accordion-style question and answer list",
+      "blocks": []
+    },
+    {
+      "name": "homepage",
+      "representativeUrl": "https://wknd.site/us/en.html",
+      "urls": [
+        "https://wknd.site/us/en.html"
+      ],
+      "coverageGaps": [],
+      "description": "Landing page with hero carousel and stacked feature/teaser sections",
       "blocks": [
-        {
-          "name": "columns-intro",
-          "instances": [
-            "#main-content > header.secondary-section .grid-layout.grid-gap-xxl"
-          ]
-        },
-        {
-          "name": "columns-article",
-          "instances": [
-            "#main-content > section.section:nth-of-type(1) .grid-layout.grid-gap-lg"
-          ]
-        },
-        {
-          "name": "cards-gallery",
-          "instances": [
-            ".grid-layout.desktop-4-column.grid-gap-sm"
-          ]
-        },
-        {
-          "name": "tabs-testimonial",
-          "instances": [
-            ".tabs-wrapper"
-          ]
-        },
-        {
-          "name": "cards-article",
-          "instances": [
-            ".grid-layout.desktop-4-column.grid-gap-md"
-          ]
-        },
-        {
-          "name": "accordion-faq",
-          "instances": [
-            ".faq-list"
-          ]
-        },
-        {
-          "name": "hero-overlay",
-          "instances": [
-            "#main-content > section.inverse-section .utility-position-relative.utility-overflow-clip"
-          ]
-        }
-      ],
-      "urlPattern": "/*",
-      "sections": [
-        {
-          "id": "rc1",
-          "name": "intro",
-          "selector": [
-            "#main-content > header.section.secondary-section"
-          ],
-          "style": "secondary",
-          "blocks": [
-            "columns-intro"
-          ],
-          "defaultContent": []
-        },
-        {
-          "id": "rc2",
-          "name": "article-header",
-          "selector": [
-            "#main-content > section.section:nth-of-type(1)"
-          ],
-          "style": null,
-          "blocks": [
-            "columns-article"
-          ],
-          "defaultContent": []
-        },
-        {
-          "id": "rc3",
-          "name": "snapshot-gallery",
-          "selector": [
-            "#main-content > section.section.secondary-section:nth-of-type(2)"
-          ],
-          "style": "secondary",
-          "blocks": [
-            "cards-gallery"
-          ],
-          "defaultContent": [
-            "#main-content > section.section.secondary-section:nth-of-type(2) .utility-text-align-center"
-          ]
-        },
-        {
-          "id": "rc4",
-          "name": "testimonials",
-          "selector": [
-            "#main-content > section.section:nth-of-type(3)"
-          ],
-          "style": null,
-          "blocks": [
-            "tabs-testimonial"
-          ],
-          "defaultContent": []
-        },
-        {
-          "id": "rc5",
-          "name": "latest-articles",
-          "selector": [
-            "#main-content > section.section.secondary-section:nth-of-type(4)"
-          ],
-          "style": "secondary",
-          "blocks": [
-            "cards-article"
-          ],
-          "defaultContent": [
-            "#main-content > section.section.secondary-section:nth-of-type(4) .utility-text-align-center"
-          ]
-        },
-        {
-          "id": "rc6",
-          "name": "faq",
-          "selector": [
-            "#main-content > section.section:nth-of-type(5)"
-          ],
-          "style": null,
-          "blocks": [
-            "accordion-faq"
-          ],
-          "defaultContent": []
-        },
-        {
-          "id": "rc7",
-          "name": "closing-hero",
-          "selector": [
-            "#main-content > section.section.inverse-section"
-          ],
-          "style": null,
-          "blocks": [
-            "hero-overlay"
-          ],
-          "defaultContent": []
-        }
+        { "name": "carousel-hero", "instances": [".carousel.cmp-carousel--hero"] },
+        { "name": "columns-intro", "instances": [".teaser.cmp-teaser--featured"] },
+        { "name": "cards-article", "instances": ["ul.cmp-image-list"] },
+        { "name": "hero-overlay", "instances": [".teaser.cmp-teaser--hero.cmp-teaser--imagebottom"] }
       ]
+    },
+    {
+      "name": "article-detail",
+      "urls": [
+        "https://wknd.site/us/en/magazine/arctic-surfing.html",
+        "https://wknd.site/us/en/magazine/guide-la-skateparks.html",
+        "https://wknd.site/us/en/magazine/san-diego-surf.html",
+        "https://wknd.site/us/en/magazine/ski-touring.html",
+        "https://wknd.site/us/en/magazine/western-australia.html"
+      ],
+      "coverageGaps": [],
+      "description": "Long-form article page with hero, author metadata and body copy sections",
+      "blocks": []
     }
   ],
   "metadata": {

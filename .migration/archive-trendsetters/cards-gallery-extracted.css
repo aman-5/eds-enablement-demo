@@ -1,0 +1,30 @@
+/* Block: cards-gallery -- CSS extracted from source computed styles */
+/* Source selector: .grid-layout.desktop-4-column.grid-gap-sm (about-us, image-only gallery) */
+
+/* Container (grid) */
+.cards-gallery {
+  display: grid;
+  grid-template-columns: 279px 279px 279px 279px; /* desktop: 4 equal cols -> repeat(4, 1fr) */
+  gap: 12px;                                       /* row+column gap */
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+}
+/* mobile (<768px): grid-template-columns: 1fr (single column), gap: 12px */
+
+/* Cell (source: div.utility-aspect-1x1) */
+.cards-gallery-cell {
+  aspect-ratio: 1 / 1;
+  border-radius: 20px;
+  overflow: hidden;
+  background-color: transparent;
+}
+
+/* Image */
+.cards-gallery img {
+  object-fit: cover;
+  display: block;
+  width: 279px;  /* fills cell -> 100% */
+  height: 279px; /* fills cell -> 100% */
+  border-radius: 0;
+}
