@@ -13,8 +13,10 @@ export default async function decorate(block) {
   if (footerMeta) {
     fragment = await loadFragment(new URL(footerMeta, window.location).pathname);
   }
-  if (!fragment) fragment = await loadFragment('/content/footer');
+  // Root path first (production canonical + resolves locally via aem up),
+  // then /content fallback — avoids a 404 on production.
   if (!fragment) fragment = await loadFragment('/footer');
+  if (!fragment) fragment = await loadFragment('/content/footer');
 
   // decorate footer DOM
   block.textContent = '';

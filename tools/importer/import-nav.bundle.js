@@ -51,10 +51,7 @@ var CustomImportScript = (() => {
       main.append(ul);
       main.append(document.createElement("hr"));
       const toolsP = document.createElement("p");
-      const signIn = document.createElement("a");
-      signIn.href = "/us/en";
-      signIn.textContent = "Sign In";
-      toolsP.append(signIn);
+      toolsP.textContent = " ";
       main.append(toolsP);
       return [{
         element: main,

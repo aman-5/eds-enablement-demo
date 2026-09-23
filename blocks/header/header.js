@@ -120,8 +120,11 @@ export default async function decorate(block) {
   if (navMeta) {
     fragment = await loadFragment(new URL(navMeta, window.location).pathname);
   }
-  if (!fragment) fragment = await loadFragment('/content/nav');
+  // Root path first (production canonical + resolves locally via aem up),
+  // then /content fallback. Root-first avoids a 404 on production where
+  // content is served at the site root, not under /content.
   if (!fragment) fragment = await loadFragment('/nav');
+  if (!fragment) fragment = await loadFragment('/content/nav');
 
   // decorate nav DOM
   block.textContent = '';
@@ -156,6 +159,21 @@ export default async function decorate(block) {
     });
   }
 
+  // Build the tools section: a search box + whatever links the fragment carried
+  // (e.g. Sign In). Search form controls are built here (not in the fragment),
+  // per the nav.plain.html contract.
+  const navTools = nav.querySelector('.nav-tools');
+  if (navTools) {
+    const search = document.createElement('div');
+    search.className = 'nav-search';
+    search.innerHTML = `<form role="search" class="nav-search-form" action="/us/en/magazine">
+        <span class="nav-search-icon" aria-hidden="true"></span>
+        <label class="nav-search-label" for="nav-search-input">Search</label>
+        <input id="nav-search-input" name="q" type="search" placeholder="Search" autocomplete="off">
+      </form>`;
+    navTools.prepend(search);
+  }
+
   // hamburger for mobile
   const hamburger = document.createElement('div');
   hamburger.classList.add('nav-hamburger');
@@ -169,8 +187,17 @@ export default async function decorate(block) {
   toggleMenu(nav, navSections, isDesktop.matches);
   isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
 
+  // Dark utility bar (WKND): Sign In + region, above the main white nav bar.
+  const utilityBar = document.createElement('div');
+  utilityBar.className = 'nav-utility';
+  utilityBar.innerHTML = `<div class="nav-utility-inner">
+      <a class="nav-utility-signin" href="/us/en">Sign In</a>
+      <span class="nav-utility-lang">EN-US</span>
+    </div>`;
+
   const navWrapper = document.createElement('div');
   navWrapper.className = 'nav-wrapper';
+  navWrapper.append(utilityBar);
   navWrapper.append(nav);
   block.append(navWrapper);
 }

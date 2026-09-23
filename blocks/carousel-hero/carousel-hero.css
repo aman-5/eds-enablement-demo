@@ -11,42 +11,39 @@
 }
 
 .carousel-hero .carousel-hero-slide {
-  position: relative;
   flex: 0 0 100%;
   min-width: 100%;
-  height: clamp(360px, 70vh, 640px);
+  display: flex;
+  flex-direction: column;
 }
 
-.carousel-hero .carousel-hero-media,
+/* full-bleed image on top */
+.carousel-hero .carousel-hero-media {
+  width: 100%;
+  height: clamp(320px, 56vh, 620px);
+  overflow: hidden;
+}
+
 .carousel-hero .carousel-hero-media picture,
 .carousel-hero .carousel-hero-media img {
-  position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
+  display: block;
 }
 
 .carousel-hero .carousel-hero-media img {
   object-fit: cover;
 }
 
-.carousel-hero .carousel-hero-media::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgb(0 0 0 / 30%);
-}
-
+/* white content bar BELOW the image (WKND layout) */
 .carousel-hero .carousel-hero-content {
-  position: absolute;
-  z-index: 1;
-  left: 50%;
-  bottom: 12%;
-  transform: translateX(-50%);
-  width: min(90%, 640px);
-  padding: 32px;
-  background: rgb(255 255 255 / 92%);
-  text-align: center;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 32px 24px 40px;
+  background: var(--background-color);
+  text-align: left;
 }
 
 .carousel-hero .carousel-hero-content h1,
@@ -54,11 +51,15 @@
 .carousel-hero .carousel-hero-content h3 {
   margin: 0 0 12px;
   color: var(--text-color);
+  font-family: var(--heading-font-family);
+  font-weight: 400;
 }
 
 .carousel-hero .carousel-hero-content p {
   margin: 0 0 20px;
+  max-width: 900px;
   color: var(--text-color);
+  font-size: 18px;
 }
 
 .carousel-hero .carousel-hero-content a {
@@ -66,27 +67,24 @@
   align-items: center;
   justify-content: center;
   padding: 14px 35px;
-  border: 2px solid var(--accent-color);
   background: var(--accent-color);
   color: var(--text-color);
   font-family: var(--body-font-family);
   font-weight: 600;
   font-size: 14px;
-  letter-spacing: 0.04em;
   text-transform: uppercase;
   text-decoration: none;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition: background-color 0.2s ease;
 }
 
 .carousel-hero .carousel-hero-content a:hover {
   background: var(--accent-hover-color);
-  border-color: var(--accent-hover-color);
 }
 
-/* nav arrows */
+/* nav arrows — sit over the image area */
 .carousel-hero .carousel-hero-nav button {
   position: absolute;
-  top: 50%;
+  top: clamp(160px, 28vh, 310px);
   transform: translateY(-50%);
   z-index: 2;
   width: 44px;
@@ -107,22 +105,19 @@
 .carousel-hero .carousel-hero-prev::before { content: '\2039'; }
 .carousel-hero .carousel-hero-next::before { content: '\203A'; }
 
-/* dots */
+/* dots — centered under the content bar */
 .carousel-hero .carousel-hero-dots {
-  position: absolute;
-  z-index: 2;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   gap: 10px;
+  justify-content: center;
+  padding: 8px 0 24px;
 }
 
 .carousel-hero .carousel-hero-dot {
   width: 12px;
   height: 12px;
   padding: 0;
-  border: 2px solid #fff;
+  border: 2px solid var(--text-color);
   border-radius: 50%;
   background: transparent;
   cursor: pointer;
@@ -131,12 +126,4 @@
 .carousel-hero .carousel-hero-dot[aria-selected="true"] {
   background: var(--accent-color);
   border-color: var(--accent-color);
-}
-
-@media (width >= 900px) {
-  .carousel-hero .carousel-hero-content {
-    left: 10%;
-    transform: none;
-    text-align: left;
-  }
 }

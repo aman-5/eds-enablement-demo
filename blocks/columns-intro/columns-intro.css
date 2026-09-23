@@ -1,88 +1,84 @@
-/* columns-intro -- values extracted from source computed styles */
+/* columns-intro -- WKND featured teaser: image LEFT, text RIGHT on grey panel */
 
-/* Row: mobile-first single column (text, then image group) */
+/* Row: mobile-first single column (image, then text) */
 .columns-intro > div {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 0;
 }
 
-/* Text column */
-.columns-intro h1 {
-  font-size: 40px;
-  line-height: 1.1;
-  letter-spacing: -0.8px;
-  margin: 0;
+/* Text column (parser emits text first) : eyebrow + heading + copy + CTA on grey panel */
+.columns-intro > div > div:first-child {
+  background: var(--light-color);
+  padding: 40px 32px;
+}
+
+.columns-intro h1,
+.columns-intro h2 {
+  font-family: var(--heading-font-family);
+  font-weight: 400;
+  font-size: var(--heading-font-size-xl);
+  line-height: 1.3;
+  margin: 8px 0 16px;
+}
+
+/* eyebrow ("Featured Article") */
+.columns-intro p strong {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.04em;
 }
 
 .columns-intro p {
   font-size: 18px;
-  line-height: 28.8px;
+  line-height: 1.6;
   color: var(--text-color);
-  margin: 24px 0 0;
+  margin: 0 0 16px;
 }
 
-/* CTA links sit together in one paragraph (not EDS button-decorated) */
+/* CTA: single yellow square button (WKND "Full Article") */
 .columns-intro p:has(a) {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-top: 32px;
+  margin-top: 24px;
 }
 
 .columns-intro p a:any-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 9999px;
-  padding: 12px 24px;
+  border: 0;
+  border-radius: 0;
+  padding: 14px 35px;
+  background: var(--accent-color);
+  color: var(--text-color);
   font-size: 14px;
   font-weight: 600;
-  line-height: 1.25;
+  text-transform: uppercase;
+  line-height: 1.5;
   text-decoration: none;
+  transition: background-color 0.2s ease;
 }
 
-/* first CTA: primary (filled) */
-.columns-intro p a:any-link:first-child {
-  border: 2px solid var(--dark-color);
-  background-color: var(--dark-color);
-  color: var(--background-color);
+.columns-intro p a:any-link:hover {
+  background: var(--accent-hover-color);
 }
 
-/* second CTA: secondary (outline) */
-.columns-intro p a:any-link:last-child {
-  border: 2px solid var(--dark-color);
-  background-color: var(--background-color);
-  color: var(--text-color);
-}
-
-/* Image column: 3 images in a 2-column grid inside a single paragraph */
-/* stylelint-disable-next-line no-descending-specificity */
-.columns-intro-img-col p {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin: 0;
-}
-
-.columns-intro-img-col picture {
-  display: block;
-}
-
+/* Image column */
 .columns-intro img {
   display: block;
   width: 100%;
+  height: 100%;
   aspect-ratio: 3 / 2;
   object-fit: cover;
-  border-radius: 20px;
+  border-radius: 0;
 }
 
 @media (width >= 900px) {
-  /* Row: two equal columns, vertically centered */
+  /* Two equal columns; image LEFT, text RIGHT (row-reverse since parser emits text first) */
   .columns-intro > div {
-    flex-direction: row;
-    align-items: center;
-    gap: 64px;
+    flex-direction: row-reverse;
+    align-items: stretch;
+    gap: 0;
   }
 
   .columns-intro > div > div {
@@ -90,9 +86,14 @@
     min-width: 0;
   }
 
-  .columns-intro h1 {
-    font-size: 56px;
-    line-height: 61.6px;
-    letter-spacing: -1.12px;
+  .columns-intro > div > div:first-child {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 56px 48px;
+  }
+
+  .columns-intro img {
+    aspect-ratio: auto;
   }
 }
