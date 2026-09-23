@@ -187,8 +187,23 @@ export function decorateMain(main) {
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
  */
+/**
+ * Ensures a canonical <link> exists for the current page (SEO). Uses the clean,
+ * trailing-slash-free pathname so it complements normalizeTrailingSlash and gives
+ * search engines one authoritative URL per page.
+ */
+function ensureCanonical() {
+  if (document.querySelector('link[rel="canonical"]')) return;
+  const link = document.createElement('link');
+  link.rel = 'canonical';
+  const path = window.location.pathname.replace(/\/+$/, '') || '/';
+  link.href = `${window.location.origin}${path}`;
+  document.head.append(link);
+}
+
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
+  ensureCanonical();
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
@@ -236,10 +251,32 @@ function loadDelayed() {
   // load anything that can be postponed to the latest here
 }
 
+/**
+ * Normalizes a stray trailing slash on non-root paths to the canonical
+ * (no-trailing-slash) URL. On EDS, `/us/en/` 404s while `/us/en` is valid, so a
+ * mistyped or mis-linked trailing slash would otherwise dead-end. Redirects with
+ * location.replace (no history entry), preserving query string and hash. Skips the
+ * site root and never loops (only fires when a trailing slash is actually present).
+ */
+function normalizeTrailingSlash() {
+  const { pathname, search, hash } = window.location;
+  if (pathname.length > 1 && pathname.endsWith('/')) {
+    const clean = pathname.replace(/\/+$/, '');
+    if (clean && clean !== pathname) {
+      window.location.replace(`${clean}${search}${hash}`);
+      return true;
+    }
+  }
+  return false;
+}
+
 async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
 }
 
-loadPage();
+// Redirect trailing-slash URLs before rendering; skip page load if redirecting.
+if (!normalizeTrailingSlash()) {
+  loadPage();
+}

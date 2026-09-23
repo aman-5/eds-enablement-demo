@@ -1,0 +1,186 @@
+{
+  "url": "https://wknd-trendsetters.site/about-us",
+  "documentPath": "/about-us",
+  "sections": [
+    {
+      "sectionNumber": 1,
+      "id": "rc1",
+      "selector": "#main-content > header.section.secondary-section",
+      "hint": "block",
+      "visualStyle": "light grey (secondary-section)",
+      "sectionMetadata": { "keep": true, "style": "secondary", "reason": "Multi-sequence section; grey background is section container styling." },
+      "sequences": [
+        {
+          "sequence": 1,
+          "description": "Left column: heading, subheading, two CTA buttons.",
+          "decision": "block",
+          "blockName": "columns-intro",
+          "blockVariant": "columns-intro",
+          "baseBlock": "columns",
+          "reason": "Part of a side-by-side two-column intro layout (text column beside an image group). Side-by-side structure requires a block; hint=block. New variant: light two-column intro with CTA buttons and an adjacent image group."
+        },
+        {
+          "sequence": 2,
+          "description": "Right column: three stacked images.",
+          "decision": "block",
+          "blockName": "columns-intro",
+          "blockVariant": "columns-intro",
+          "baseBlock": "columns",
+          "reason": "Second column of the same columns-intro block (image group)."
+        }
+      ]
+    },
+    {
+      "sectionNumber": 2,
+      "id": "rc2",
+      "selector": "#main-content > section.section:nth-of-type(1)",
+      "hint": "block",
+      "visualStyle": "white (default)",
+      "sectionMetadata": { "keep": false, "reason": "Default white background; no section styling needed." },
+      "sequences": [
+        {
+          "sequence": 1,
+          "description": "Left column: large feature image (3x2).",
+          "decision": "block",
+          "blockName": "columns-article",
+          "blockVariant": "columns-article",
+          "baseBlock": "columns",
+          "reason": "Side-by-side layout: image beside article header text. Requires columns block; hint=block. New variant: article-header two-column (feature image + breadcrumb/heading/byline) — distinct from columns-intro (no CTA buttons, includes byline meta)."
+        },
+        {
+          "sequence": 2,
+          "description": "Right column: breadcrumb, heading, author byline, date/read-time meta.",
+          "decision": "block",
+          "blockName": "columns-article",
+          "blockVariant": "columns-article",
+          "baseBlock": "columns",
+          "reason": "Second column of the same columns-article block."
+        }
+      ]
+    },
+    {
+      "sectionNumber": 3,
+      "id": "rc3",
+      "selector": "#main-content > section.section.secondary-section:nth-of-type(2)",
+      "hint": "block",
+      "visualStyle": "light grey (secondary-section)",
+      "sectionMetadata": { "keep": true, "style": "secondary", "reason": "Multi-sequence section; grey background is section container styling." },
+      "sequences": [
+        {
+          "sequence": 1,
+          "description": "Centered heading 'Style in every snapshot' + paragraph.",
+          "decision": "default-content",
+          "reason": "Author types a heading and a paragraph normally."
+        },
+        {
+          "sequence": 2,
+          "description": "4-column grid of eight uniform square images (images only, no text).",
+          "decision": "block",
+          "blockName": "cards-gallery",
+          "blockVariant": "cards-gallery",
+          "baseBlock": "cards",
+          "reason": "Repeating grid of uniform square images with no text. New variant: image-only gallery grid (4-column, square aspect) — distinct from cards-article which has tags/dates/headings. hint=block."
+        }
+      ]
+    },
+    {
+      "sectionNumber": 4,
+      "id": "rc4",
+      "selector": "#main-content > section.section:nth-of-type(3)",
+      "hint": "block",
+      "visualStyle": "white (default)",
+      "sectionMetadata": { "keep": false, "reason": "Single-block section (Step 3e): tabs on default white background; no distinct section styling to preserve." },
+      "sequences": [
+        {
+          "sequence": 1,
+          "description": "Four switchable testimonial panels with a tab menu of avatar cards (name + role); each panel has person image, name, role, quote.",
+          "decision": "block",
+          "blockName": "tabs-testimonial",
+          "blockVariant": "tabs-testimonial",
+          "baseBlock": "tabs",
+          "reason": "Interactive switchable panels require the tabs block; obvious match. New variant: testimonial tabs where each tab label is an avatar card (avatar + name + role) and each panel is a person image + quote. hint=block."
+        }
+      ]
+    },
+    {
+      "sectionNumber": 5,
+      "id": "rc5",
+      "selector": "#main-content > section.section.secondary-section:nth-of-type(4)",
+      "hint": "block",
+      "visualStyle": "light grey (secondary-section)",
+      "sectionMetadata": { "keep": true, "style": "secondary", "reason": "Multi-sequence section; grey background is section container styling." },
+      "sequences": [
+        {
+          "sequence": 1,
+          "description": "Centered heading 'Latest articles' + paragraph.",
+          "decision": "default-content",
+          "reason": "Author types a heading and a paragraph normally."
+        },
+        {
+          "sequence": 2,
+          "description": "4-column grid of linked article cards (image, category tag, date, heading).",
+          "decision": "block",
+          "blockName": "cards-article",
+          "blockVariant": "cards-article",
+          "baseBlock": "cards",
+          "reason": "Repeating grid of distinct linked items each with image, category tag, date, and heading. New variant: article/blog cards — distinct from cards-gallery (image-only). hint=block."
+        }
+      ]
+    },
+    {
+      "sectionNumber": 6,
+      "id": "rc6",
+      "selector": "#main-content > section.section:nth-of-type(5)",
+      "hint": "block",
+      "visualStyle": "white (default)",
+      "sectionMetadata": { "keep": false, "reason": "Default white background; no section styling needed." },
+      "sequences": [
+        {
+          "sequence": 1,
+          "description": "Heading 'Got questions? We've got answers.' + subheading.",
+          "decision": "default-content",
+          "reason": "Author types a heading and a paragraph normally."
+        },
+        {
+          "sequence": 2,
+          "description": "Four expandable FAQ question/answer items.",
+          "decision": "block",
+          "blockName": "accordion-faq",
+          "blockVariant": "accordion-faq",
+          "baseBlock": "accordion",
+          "reason": "Expandable Q&A pairs require the accordion block; obvious match. New variant: FAQ accordion with plus-icon toggles on a white section. hint=block."
+        }
+      ]
+    },
+    {
+      "sectionNumber": 7,
+      "id": "rc7",
+      "selector": "#main-content > section.section.inverse-section",
+      "hint": "block",
+      "visualStyle": "dark (inverse-section) with full-width background image + overlay",
+      "sectionMetadata": { "keep": false, "reason": "Single-block section (Step 3e): background is a full-bleed image with dark overlay that is part of the hero's own design, not section container styling." },
+      "sequences": [
+        {
+          "sequence": 1,
+          "description": "Full-width banner: background image + dark overlay, overlaid heading, subheading, and 'See more' CTA.",
+          "decision": "block",
+          "blockName": "hero-overlay",
+          "blockVariant": "hero-overlay",
+          "baseBlock": "hero",
+          "reason": "Prominent full-width banner with background image, dark overlay, headline, subheading, and CTA; obvious hero match. New variant: dark-overlay hero with text on top of a full-bleed image. hint=block."
+        }
+      ]
+    }
+  ],
+  "blockStructuresFetched": ["columns", "cards", "tabs", "accordion", "hero"],
+  "variantMapping": {
+    "columns-intro": { "baseBlock": "columns", "status": "new", "reason": "Light two-column intro: text + CTAs beside image group." },
+    "columns-article": { "baseBlock": "columns", "status": "new", "reason": "Article header two-column: feature image beside breadcrumb/heading/byline." },
+    "cards-gallery": { "baseBlock": "cards", "status": "new", "reason": "Image-only 4-column square gallery grid." },
+    "tabs-testimonial": { "baseBlock": "tabs", "status": "new", "reason": "Testimonial tabs with avatar-card labels and image+quote panels." },
+    "cards-article": { "baseBlock": "cards", "status": "new", "reason": "Article/blog cards with image, tag, date, heading; whole card linked." },
+    "accordion-faq": { "baseBlock": "accordion", "status": "new", "reason": "FAQ accordion with plus-icon toggles." },
+    "hero-overlay": { "baseBlock": "hero", "status": "new", "reason": "Dark-overlay full-bleed hero with heading, subheading, CTA." }
+  },
+  "variantNotes": "First migration for this project: no existing custom variants on disk, so all seven variants are newly named (never vanilla). No reuse candidates found. Variant code is generated downstream, not in this analysis phase."
+}

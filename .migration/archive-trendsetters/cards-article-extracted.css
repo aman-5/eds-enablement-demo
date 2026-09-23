@@ -1,0 +1,71 @@
+/* Block: cards-article -- CSS extracted from source computed styles */
+/* Source: https://wknd-trendsetters.site/about-us  .grid-layout.desktop-4-column.grid-gap-md */
+
+/* Grid (block itself) */
+.cards-article {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+/* Card (source: <a>.article-card) */
+.card {
+  border: 1px solid rgb(232, 232, 232);
+  border-radius: 20px;
+  overflow: hidden;
+  background-color: transparent;
+  display: block;
+}
+
+/* Image */
+.card img {
+  object-fit: cover;
+  width: 100%;
+  aspect-ratio: 1.6; /* 550 x 343.75 measured */
+  display: block;
+}
+
+/* Body (.article-card-body) */
+.card-body {
+  padding: 24px;
+}
+
+/* Meta line (.article-card-meta) */
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 12px;
+}
+
+/* Tag pill (.tag) */
+.card-tag {
+  background-color: rgb(244, 254, 139);
+  color: rgb(0, 0, 0);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  line-height: 19.2px;
+  font-family: "Instrument Sans", sans-serif;
+}
+
+/* Date */
+.card-date {
+  color: rgb(102, 102, 102);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+/* Title (h3) */
+.card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  font-family: Syncopate, sans-serif;
+  line-height: 19.8px;
+  text-transform: uppercase;
+  color: rgb(0, 0, 0);
+  margin: 0;
+}

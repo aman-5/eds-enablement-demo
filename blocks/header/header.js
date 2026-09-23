@@ -113,10 +113,15 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  // load nav as fragment
+  // load nav as fragment.
+  // metadata-independent dual-fetch: /content first (localhost aem up), then root (DA/EDS prod).
   const navMeta = getMetadata('nav');
-  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
-  const fragment = await loadFragment(navPath);
+  let fragment;
+  if (navMeta) {
+    fragment = await loadFragment(new URL(navMeta, window.location).pathname);
+  }
+  if (!fragment) fragment = await loadFragment('/content/nav');
+  if (!fragment) fragment = await loadFragment('/nav');
 
   // decorate nav DOM
   block.textContent = '';

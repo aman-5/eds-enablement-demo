@@ -1,0 +1,63 @@
+/* Block: hero-overlay -- CSS extracted from source computed styles */
+/* Source: https://wknd-trendsetters.site/about-us  (closing hero) */
+
+/* Block root (.utility-position-relative.utility-overflow-clip) */
+.hero-overlay {
+  position: relative;
+  color: rgb(255, 255, 255);
+  border-radius: 20px;
+  min-height: 448px;           /* desktop */
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;       /* content anchored to bottom */
+  overflow: hidden;            /* utility-overflow-clip */
+}
+
+/* Background image (row 1 -> .cover-image, absolute fill) */
+.hero-overlay img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+/* Dark gradient overlay (.overlay) */
+/* background-image: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 60%) */
+
+/* Content (.card-body.utility-max-width-lg.utility-text-on-overlay) */
+/* padding: 64px; max-width: 672px; position: relative; z-index: 2; text-align: start */
+
+.hero-overlay h2 {
+  font-size: 56px;             /* desktop; mobile 28px */
+  font-weight: 700;
+  font-family: Syncopate, sans-serif;
+  line-height: 61.6px;         /* desktop; mobile 30.8px */
+  letter-spacing: -1.12px;     /* desktop; mobile -0.56px */
+  text-transform: uppercase;
+  color: rgb(255, 255, 255);
+}
+
+.hero-overlay p {
+  font-size: 18px;
+  font-family: "Instrument Sans", sans-serif;
+  line-height: 28.8px;
+  color: rgb(255, 255, 255);
+  margin: 16px 0px 0px;
+}
+
+/* CTA (a) */
+.hero-overlay a {
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  padding: 12px 24px;
+  border: 2px solid rgb(255, 255, 255);
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: "Instrument Sans", sans-serif;
+  text-decoration: none;
+  display: inline-flex;
+}
+
+/* Section context: black (inverse) section, 128px vertical padding desktop / 64px mobile */

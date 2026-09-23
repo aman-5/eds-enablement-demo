@@ -15,15 +15,17 @@
 :root {
   /* colors (brand values from brand.css) */
   --background-color: #fff;
-  --light-color: #f5f5f5;
-  --dark-color: #000;
-  --text-color: #000;
-  --link-color: #666;
+  --light-color: #ebebeb;
+  --dark-color: #202020;
+  --text-color: #202020;
+  --link-color: #202020;
   --link-hover-color: #000;
+  --accent-color: #ffea00;
+  --accent-hover-color: #ffd400;
 
   /* fonts (brand values from brand.css) */
-  --body-font-family: "Instrument Sans", sans-serif;
-  --heading-font-family: "Syncopate", sans-serif;
+  --body-font-family: "Source Sans Pro", "Helvetica Neue", helvetica, arial, sans-serif;
+  --heading-font-family: "Asar", georgia, "Times New Roman", times, serif;
 
   /* body sizes */
   --body-font-size-m: 18px;
@@ -31,26 +33,26 @@
   --body-font-size-xs: 14px;
 
   /* heading sizes (mobile) */
-  --heading-font-size-xxl: 36px;
+  --heading-font-size-xxl: 34px;
   --heading-font-size-xl: 28px;
-  --heading-font-size-l: 24px;
-  --heading-font-size-m: 20px;
-  --heading-font-size-s: 18px;
-  --heading-font-size-xs: 16px;
+  --heading-font-size-l: 22px;
+  --heading-font-size-m: 18px;
+  --heading-font-size-s: 16px;
+  --heading-font-size-xs: 14px;
 
   /* nav height */
-  --nav-height: 64px;
+  --nav-height: 89px;
 }
 
 @media (width >= 900px) {
   :root {
-    /* heading sizes (desktop, from brand extraction) */
-    --heading-font-size-xxl: 40px;
-    --heading-font-size-xl: 32px;
+    /* heading sizes (desktop, from WKND extraction) */
+    --heading-font-size-xxl: 54px;
+    --heading-font-size-xl: 36px;
     --heading-font-size-l: 24px;
-    --heading-font-size-m: 20px;
-    --heading-font-size-s: 18px;
-    --heading-font-size-xs: 16px;
+    --heading-font-size-m: 18px;
+    --heading-font-size-s: 16px;
+    --heading-font-size-xs: 14px;
   }
 }
 
@@ -84,16 +86,27 @@ footer .footer[data-block-status="loaded"] {
 
 h1,
 h2,
-h3,
+h3 {
+  margin-top: 0.8em;
+  margin-bottom: 0.25em;
+  font-family: var(--heading-font-family);
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--text-color);
+  scroll-margin: 40px;
+}
+
+/* WKND uses uppercase Source Sans Pro for smaller sub-headings/eyebrows */
 h4,
 h5,
 h6 {
   margin-top: 0.8em;
   margin-bottom: 0.25em;
-  font-family: var(--heading-font-family);
-  font-weight: 700;
-  line-height: 1.1;
+  font-family: var(--body-font-family);
+  font-weight: 600;
+  line-height: 1.3;
   text-transform: uppercase;
+  letter-spacing: 0.04em;
   color: var(--text-color);
   scroll-margin: 40px;
 }
@@ -171,19 +184,33 @@ button.button {
   justify-content: center;
   max-width: 100%;
   margin: 0;
-  border: 2px solid transparent;
-  border-radius: 9999px;
-  padding: 12px 24px;
-  font: inherit;
+  border: 2px solid var(--accent-color);
+  border-radius: 0;
+  padding: 14px 35px;
+  font-family: var(--body-font-family);
   font-weight: 600;
   font-size: 14px;
   line-height: 1.25;
-  text-transform: none;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+a.button:hover,
+a.button:focus-visible,
+button.button:hover,
+button.button:focus-visible {
+  border-color: var(--accent-hover-color);
+  background-color: var(--accent-hover-color);
+  color: var(--text-color);
+  text-decoration: none;
 }
 
 a.button[aria-disabled="true"],
@@ -192,20 +219,21 @@ button.button:disabled {
   pointer-events: none;
 }
 
+/* primary = WKND signature yellow (same as default button) */
 a.button.primary,
 button.button.primary {
-  border-color: var(--text-color);
-  background-color: var(--text-color);
-  color: var(--background-color);
+  border-color: var(--accent-color);
+  background-color: var(--accent-color);
+  color: var(--text-color);
 }
 
 a.button.primary:hover,
 a.button.primary:focus-visible,
 button.button.primary:hover,
 button.button.primary:focus-visible {
-  border-color: var(--dark-color);
-  background-color: var(--dark-color);
-  color: var(--light-color);
+  border-color: var(--accent-hover-color);
+  background-color: var(--accent-hover-color);
+  color: var(--text-color);
 }
 
 a.button.primary[aria-disabled="true"],
@@ -219,6 +247,7 @@ button.button.primary:disabled:focus-visible {
   color: var(--dark-color);
 }
 
+/* secondary = outlined dark (transparent fill) */
 a.button.secondary,
 button.button.secondary {
   border-color: var(--text-color);
@@ -231,8 +260,8 @@ a.button.secondary:focus-visible,
 button.button.secondary:hover,
 button.button.secondary:focus-visible {
   border-color: var(--dark-color);
-  background-color: var(--light-color);
-  color: var(--dark-color);
+  background-color: var(--dark-color);
+  color: #fff;
 }
 
 a.button.secondary[aria-disabled="true"],
@@ -246,20 +275,21 @@ button.button.secondary:disabled:focus-visible {
   color: var(--dark-color);
 }
 
-/* high-impact call-to-action */
+/* high-impact call-to-action = solid dark */
 a.button.accent,
 button.button.accent {
-  border-color: var(--link-color);
-  background-color: var(--link-color);
-  color: var(--background-color);
+  border-color: var(--dark-color);
+  background-color: var(--dark-color);
+  color: #fff;
 }
 
 a.button.accent:hover,
 a.button.accent:focus-visible,
 button.button.accent:hover,
 button.button.accent:focus-visible {
-  border-color: var(--link-hover-color);
-  background-color: var(--link-hover-color);
+  border-color: #000;
+  background-color: #000;
+  color: #fff;
 }
 
 a.button.accent[aria-disabled="true"],
@@ -296,7 +326,7 @@ main > .section {
 }
 
 main > .section > div {
-  max-width: 1200px;
+  max-width: var(--content-max-width);
   margin: auto;
   padding: 0 24px;
 }

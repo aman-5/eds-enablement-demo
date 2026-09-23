@@ -1,0 +1,16 @@
+h2 {
+  font-size: 32px;
+  font-weight: 700;
+  font-family: Syncopate, sans-serif;
+  line-height: 35.2px;
+  text-transform: uppercase;
+  color: rgb(0, 0, 0);
+}
+
+p {
+  font-size: 18px;
+  font-family: "Instrument Sans", sans-serif;
+  line-height: 28.8px;
+  color: rgb(0, 0, 0);
+  margin: 12px 0px 0px;
+}
