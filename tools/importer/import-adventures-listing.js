@@ -21,8 +21,13 @@ function findBlocksOnPage(document, template) {
   template.blocks.forEach((b) => b.instances.forEach((sel) => {
     let els = [...document.querySelectorAll(sel)];
     // The tab widget renders one card list per category tab (All + 5 categories),
-    // all containing the same cards. Only keep the FIRST image-list ("All").
-    if (b.name === 'cards-article') els = els.slice(0, 1);
+    // all containing the same cards. Only keep the FIRST image-list ("All") and
+    // remove the rest so the per-category tab panels don't leak into the output
+    // as stray <ul> groupings below the grid.
+    if (b.name === 'cards-article') {
+      els.slice(1).forEach((extra) => extra.remove());
+      els = els.slice(0, 1);
+    }
     els.forEach((el) => pageBlocks.push({ name: b.name, selector: sel, element: el }));
   }));
   console.log(`Found ${pageBlocks.length} block instances on page`);

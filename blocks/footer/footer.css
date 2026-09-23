@@ -1,47 +1,196 @@
+/* WKND footer — dark bar, mobile-first */
+
+/* Link base/hover variants intentionally grouped by component, not by
+   specificity order. */
+/* stylelint-disable no-descending-specificity */
 footer {
   background-color: var(--dark-color);
   color: #ebebeb;
-  font-size: var(--body-font-size-xs);
+  font-family: var(--body-font-family);
 }
 
-footer .footer > div {
-  margin: auto;
+footer .footer-inner {
   max-width: var(--content-max-width);
-  padding: 48px 24px 32px;
+  margin: 0 auto;
+  padding: 24px 24px 32px;
 }
 
-footer .footer p {
-  margin: 0 0 8px;
+footer a {
+  color: #ebebeb;
+  text-decoration: none;
+}
+
+footer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+footer p {
+  margin: 0 0 12px;
   color: #ebebeb;
 }
 
-/* WKND brand wordmark in footer */
-footer .footer a {
-  color: #ebebeb;
+/* brand + nav */
+footer .footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 16px;
 }
 
-footer .footer a:hover {
+footer .footer-logo a {
+  display: inline-block;
+  font-family: var(--heading-font-family);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: 0.02em;
   color: #fff;
+}
+
+footer .footer-logo img {
+  height: 48px;
+  width: auto;
+  display: block;
+}
+
+footer .footer-nav ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+footer .footer-nav a {
+  display: inline-block;
+  padding: 8px 4px;
+  color: #ebebeb;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+footer .footer-nav a:hover,
+footer .footer-nav a:focus {
+  color: var(--accent-color);
+}
+
+/* social — heading + links on one row */
+footer .footer-social {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px 0;
+}
+
+footer .footer-social h4 {
+  margin: 0;
+  color: #ebebeb;
+  font-family: var(--body-font-family);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.5;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+footer .footer-social-list {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+footer .footer-social-list a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ebebeb;
+  font-size: 14px;
+  text-transform: uppercase;
+  transition: color 0.2s, opacity 0.2s;
+}
+
+footer .footer-social-list a:hover,
+footer .footer-social-list a:focus {
+  color: var(--accent-color);
+}
+
+/* if social links carry icons, render them as light square tiles */
+footer .footer-social-list a:has(img),
+footer .footer-social-list a:has(picture) {
+  width: 48px;
+  height: 48px;
+  background-color: #ebebeb;
+  color: var(--dark-color);
+}
+
+footer .footer-social-list a:has(img):hover,
+footer .footer-social-list a:has(picture):hover {
+  opacity: 0.7;
+}
+
+footer .footer-social-list img {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+/* legal */
+footer .footer-legal {
+  border-top: 1px solid rgb(235 235 235 / 25%);
+  padding-top: 16px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #f7f7f7;
+}
+
+footer .footer-legal p {
+  color: #f7f7f7;
+}
+
+footer .footer-legal a {
+  color: #f7f7f7;
   text-decoration: underline;
 }
 
-/* footer nav list — horizontal, no bullets */
-footer .footer ul {
-  list-style: none;
-  margin: 16px 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px 28px;
+footer .footer-legal a:hover,
+footer .footer-legal a:focus {
+  color: var(--accent-color);
 }
 
-footer .footer h4 {
-  color: #fff;
-  margin: 24px 0 8px;
-}
-
+/* desktop */
 @media (width >= 900px) {
-  footer .footer > div {
-    padding: 48px 32px 32px;
+  footer .footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding: 24px 32px 32px;
+  }
+
+  /* top row: logo + nav (left) grow, social pinned right */
+  footer .footer-brand {
+    flex: 1 1 auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 48px;
+    padding-bottom: 0;
+  }
+
+  footer .footer-nav ul {
+    flex-direction: row;
+    gap: 24px;
+  }
+
+  footer .footer-social {
+    flex: 0 0 auto;
+    padding: 0;
+  }
+
+  /* legal spans the full width on its own row below */
+  footer .footer-legal {
+    flex: 1 1 100%;
+    margin-top: 16px;
   }
 }
+
+/* stylelint-enable no-descending-specificity */

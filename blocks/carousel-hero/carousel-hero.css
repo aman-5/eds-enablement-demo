@@ -1,7 +1,19 @@
+/* Block: carousel-hero — WKND full-bleed photographic hero.
+   Layout matches wknd.site/us/en: fixed-height photo with a centered white
+   content box pulled up to overlap the photo's lower edge; dot indicators and
+   dark chevron arrows sit in a strip at the bottom. */
+
+/* Full-bleed: escape the section's max-width / horizontal padding */
+.carousel-hero-wrapper {
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
 .carousel-hero {
   position: relative;
   overflow: hidden;
   width: 100%;
+  background-color: var(--background-color);
 }
 
 .carousel-hero .carousel-hero-slides {
@@ -15,9 +27,11 @@
   min-width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: stretch;
+  position: relative;
 }
 
-/* full-bleed image on top */
+/* --- Image --- */
 .carousel-hero .carousel-hero-media {
   width: 100%;
   height: clamp(320px, 56vh, 620px);
@@ -35,13 +49,15 @@
   object-fit: cover;
 }
 
-/* white content bar BELOW the image (WKND layout) */
+/* --- White content box --- */
 .carousel-hero .carousel-hero-content {
+  z-index: 1;
   box-sizing: border-box;
+  position: relative;
   width: 100%;
   max-width: var(--content-max-width);
   margin: 0 auto;
-  padding: 32px 24px 40px;
+  padding: 18px 24px;
   background: var(--background-color);
   text-align: left;
 }
@@ -49,81 +65,167 @@
 .carousel-hero .carousel-hero-content h1,
 .carousel-hero .carousel-hero-content h2,
 .carousel-hero .carousel-hero-content h3 {
-  margin: 0 0 12px;
+  margin: 0;
   color: var(--text-color);
   font-family: var(--heading-font-family);
   font-weight: 400;
+  line-height: 1.5;
 }
 
 .carousel-hero .carousel-hero-content p {
-  margin: 0 0 20px;
+  margin: 0;
   max-width: 900px;
   color: var(--text-color);
   font-size: 18px;
+  line-height: 1.75;
 }
 
-.carousel-hero .carousel-hero-content a {
+.carousel-hero .carousel-hero-content p:last-child {
+  margin-top: 18px;
+}
+
+/* CTA link */
+.carousel-hero .carousel-hero-content a:any-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  margin: 0;
+  border: 0;
   padding: 14px 35px;
   background: var(--accent-color);
   color: var(--text-color);
   font-family: var(--body-font-family);
   font-weight: 600;
   font-size: 14px;
+  line-height: 1.25;
   text-transform: uppercase;
   text-decoration: none;
   transition: background-color 0.2s ease;
 }
 
-.carousel-hero .carousel-hero-content a:hover {
+.carousel-hero .carousel-hero-content a:any-link:hover,
+.carousel-hero .carousel-hero-content a:any-link:focus-visible {
   background: var(--accent-hover-color);
-}
-
-/* nav arrows — sit over the image area */
-.carousel-hero .carousel-hero-nav button {
-  position: absolute;
-  top: clamp(160px, 28vh, 310px);
-  transform: translateY(-50%);
-  z-index: 2;
-  width: 44px;
-  height: 44px;
-  border: none;
-  background: rgb(255 255 255 / 80%);
   color: var(--text-color);
-  font-size: 20px;
-  cursor: pointer;
+  text-decoration: none;
 }
 
-.carousel-hero .carousel-hero-nav button:hover {
-  background: var(--accent-color);
-}
-
-.carousel-hero .carousel-hero-prev { left: 16px; }
-.carousel-hero .carousel-hero-next { right: 16px; }
-.carousel-hero .carousel-hero-prev::before { content: '\2039'; }
-.carousel-hero .carousel-hero-next::before { content: '\203A'; }
-
-/* dots — centered under the content bar */
+/* --- Dot indicators (centered in bottom strip) --- */
 .carousel-hero .carousel-hero-dots {
+  position: relative;
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 0;
   justify-content: center;
-  padding: 8px 0 24px;
+  padding: 20px 12px;
+  line-height: 0;
+  z-index: 2;
 }
 
 .carousel-hero .carousel-hero-dot {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
+  margin: 0 7px;
   padding: 0;
-  border: 2px solid var(--text-color);
+  border: 0;
   border-radius: 50%;
-  background: transparent;
+  background: var(--mid-color, #afafaf);
+  transition: background-color 0.2s;
   cursor: pointer;
 }
 
-.carousel-hero .carousel-hero-dot[aria-selected="true"] {
-  background: var(--accent-color);
-  border-color: var(--accent-color);
+.carousel-hero .carousel-hero-dot[aria-selected="true"],
+.carousel-hero .carousel-hero-dot:hover,
+.carousel-hero .carousel-hero-dot:focus-visible {
+  background: rgb(0 0 0 / 80%);
+}
+
+/* --- Prev / next arrows (bottom-right, dark chevrons) --- */
+.carousel-hero .carousel-hero-nav {
+  position: absolute;
+  bottom: 14px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 2;
+}
+
+.carousel-hero .carousel-hero-nav button {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--text-color);
+  transition: opacity 0.2s;
+  cursor: pointer;
+}
+
+.carousel-hero .carousel-hero-nav button:hover,
+.carousel-hero .carousel-hero-nav button:focus-visible {
+  opacity: 0.6;
+}
+
+.carousel-hero .carousel-hero-nav button::after {
+  display: block;
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: calc(50% + 2px);
+  width: 12px;
+  height: 12px;
+  border: 2px solid;
+  border-bottom: 0;
+  border-left: 0;
+  transform: translate(-50%, -50%) rotate(-135deg);
+}
+
+.carousel-hero .carousel-hero-nav button.carousel-hero-next::after {
+  left: calc(50% - 2px);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+/* ===================== Desktop ===================== */
+@media (width >= 900px) {
+  /* white strip below the photo holds dots + arrows */
+  .carousel-hero {
+    padding-bottom: 28px;
+  }
+
+  /* fixed-height photo in normal flow (source: 640px) */
+  .carousel-hero .carousel-hero-media {
+    height: 640px;
+  }
+
+  /* centered white box pulled up to overlap the photo bottom */
+  .carousel-hero .carousel-hero-content {
+    max-width: 1192px;
+    margin: -180px auto 0;
+    padding: 18px 28px;
+  }
+
+  .carousel-hero .carousel-hero-dots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 8px;
+    padding: 0;
+
+    /* container spans full width; only the dots themselves should capture
+       clicks so the bottom-right arrows stay clickable */
+    pointer-events: none;
+  }
+
+  .carousel-hero .carousel-hero-dots .carousel-hero-dot {
+    pointer-events: auto;
+  }
+
+  .carousel-hero .carousel-hero-nav {
+    bottom: 2px;
+    right: 0;
+  }
 }

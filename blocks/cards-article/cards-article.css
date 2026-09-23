@@ -1,92 +1,70 @@
-/* cards-article -- 4-column grid of linked article cards */
-
-/* Design values extracted from https://wknd-trendsetters.site/about-us */
+/* cards-article — 4-up borderless article cards.
+   Values extracted from source .image-list.list computed styles (wknd.site). */
 
 .cards-article > ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
+  gap: 32px 14px;
 }
 
-/* Card — WKND: clean, square, no heavy border */
 .cards-article > ul > li {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  background-color: transparent;
+  min-width: 0; /* prevent wide image content from blowing out grid tracks */
 }
 
-/* Image */
 .cards-article .cards-article-card-image {
   line-height: 0;
 }
 
-.cards-article > ul > li img {
-  width: 100%;
-  aspect-ratio: 1.6;
-  object-fit: cover;
+.cards-article .cards-article-card-image img {
   display: block;
+  width: 100%;
+  aspect-ratio: 13 / 10; /* source 260x200 */
+  object-fit: cover;
+  border-radius: 0;
 }
 
-/* Body */
 .cards-article .cards-article-card-body {
-  padding: 20px 4px;
+  margin: 9px 0 0;
 }
 
-/* Meta line: tag pill + date */
-.cards-article .cards-article-card-meta {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0 0 12px;
-}
-
-.cards-article .cards-article-card-tag {
-  background-color: rgb(244 254 139);
-  color: var(--text-color);
-  padding: 4px 12px;
-  border-radius: 9999px;
-  font-family: var(--body-font-family);
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 19.2px;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.cards-article .cards-article-card-date {
-  color: var(--link-color);
-  font-size: 14px;
-  font-weight: 400;
-}
-
-/* Title — WKND: blue link, Source Sans Pro, normal weight/case */
+/* Title — source .cmp-image-list__item-title: 18px / 600 / uppercase / #202020 */
 .cards-article .cards-article-card-body h3 {
   margin: 0;
   font-family: var(--body-font-family);
   font-size: 18px;
-  font-weight: 400;
-  line-height: 1.5;
-  text-transform: none;
-  color: #0045ff;
+  font-weight: 600;
+  line-height: 27px;
+  text-transform: uppercase;
+  color: var(--text-color);
 }
 
-.cards-article .cards-article-card-body h3 a {
-  color: #0045ff;
+.cards-article .cards-article-card-body h3 a:any-link {
+  color: var(--text-color);
   text-decoration: none;
 }
 
 .cards-article .cards-article-card-body h3 a:hover {
-  text-decoration: underline;
+  color: var(--link-hover-color);
+  text-decoration: none;
 }
 
-@media (width >= 600px) {
-  .cards-article > ul {
-    grid-template-columns: repeat(2, 1fr);
-  }
+/* Description — source .cmp-image-list__item-description:
+   14px / #696969 / 21px, uppercase, single-line truncated with ellipsis */
+.cards-article .cards-article-card-body p {
+  margin: 16px 0 0;
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  color: rgb(105 105 105);
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 @media (width >= 900px) {
