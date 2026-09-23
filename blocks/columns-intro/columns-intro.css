@@ -1,0 +1,98 @@
+/* columns-intro -- values extracted from source computed styles */
+
+/* Row: mobile-first single column (text, then image group) */
+.columns-intro > div {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Text column */
+.columns-intro h1 {
+  font-size: 40px;
+  line-height: 1.1;
+  letter-spacing: -0.8px;
+  margin: 0;
+}
+
+.columns-intro p {
+  font-size: 18px;
+  line-height: 28.8px;
+  color: var(--text-color);
+  margin: 24px 0 0;
+}
+
+/* CTA links sit together in one paragraph (not EDS button-decorated) */
+.columns-intro p:has(a) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.columns-intro p a:any-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-decoration: none;
+}
+
+/* first CTA: primary (filled) */
+.columns-intro p a:any-link:first-child {
+  border: 2px solid var(--dark-color);
+  background-color: var(--dark-color);
+  color: var(--background-color);
+}
+
+/* second CTA: secondary (outline) */
+.columns-intro p a:any-link:last-child {
+  border: 2px solid var(--dark-color);
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+/* Image column: 3 images in a 2-column grid inside a single paragraph */
+/* stylelint-disable-next-line no-descending-specificity */
+.columns-intro-img-col p {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 0;
+}
+
+.columns-intro-img-col picture {
+  display: block;
+}
+
+.columns-intro img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+@media (width >= 900px) {
+  /* Row: two equal columns, vertically centered */
+  .columns-intro > div {
+    flex-direction: row;
+    align-items: center;
+    gap: 64px;
+  }
+
+  .columns-intro > div > div {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .columns-intro h1 {
+    font-size: 56px;
+    line-height: 61.6px;
+    letter-spacing: -1.12px;
+  }
+}

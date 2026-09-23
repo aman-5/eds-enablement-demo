@@ -1,0 +1,10 @@
+{
+  "variantName": "accordion-faq",
+  "baseBlock": "accordion",
+  "visualCharacteristics": "Stacked list of expandable FAQ items on a white background. Each item shows a bold question with a plus/expand indicator; clicking reveals the answer body below.",
+  "contentPattern": "One row per FAQ item: first cell is the question label, second cell is the answer body.",
+  "usage": "Frequently-asked-questions section with collapsible question/answer pairs.",
+  "canonicalModel": "standalone",
+  "options": [],
+  "memberVariantIds": ["accordion-faq"]
+}

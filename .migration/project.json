@@ -1,0 +1,11 @@
+{
+  "type": "da",
+  "sites": {
+    "eds-enablement-demo": {
+      "previewOrg": "aman-5",
+      "previewSite": "eds-enablement-demo",
+      "contentHostUrl": "https://content.da.live/aman-5/eds-enablement-demo/",
+      "libraryUrl": "https://main--sta-boilerplate--aemdemos.aem.page/tools/sidekick/library.json"
+    }
+  }
+}
