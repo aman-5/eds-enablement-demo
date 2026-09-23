@@ -144,6 +144,14 @@ export default async function decorate(block) {
     brandLink.className = '';
     brandLink.closest('.button-container').className = '';
   }
+  // Swap the brand text for the WKND logo (SVG), keeping the text as the
+  // accessible label / img alt.
+  const brandAnchor = navBrand.querySelector('a');
+  if (brandAnchor) {
+    const label = brandAnchor.textContent.trim() || 'WKND';
+    brandAnchor.setAttribute('aria-label', label);
+    brandAnchor.innerHTML = `<img class="nav-logo" src="/icons/wknd-logo.svg" alt="${label}" width="120" height="45" loading="eager">`;
+  }
 
   const navSections = nav.querySelector('.nav-sections');
   if (navSections) {
@@ -159,20 +167,84 @@ export default async function decorate(block) {
     });
   }
 
-  // Build the tools section: a search box + whatever links the fragment carried
-  // (e.g. Sign In). Search form controls are built here (not in the fragment),
-  // per the nav.plain.html contract.
-  const navTools = nav.querySelector('.nav-tools');
-  if (navTools) {
-    const search = document.createElement('div');
-    search.className = 'nav-search';
-    search.innerHTML = `<form role="search" class="nav-search-form" action="/us/en/magazine">
-        <span class="nav-search-icon" aria-hidden="true"></span>
-        <label class="nav-search-label" for="nav-search-input">Search</label>
-        <input id="nav-search-input" name="q" type="search" placeholder="Search" autocomplete="off">
-      </form>`;
-    navTools.prepend(search);
+  // Build the tools section (right side of the nav): a locale toggle + search
+  // box. The nav fragment's third cell is empty and gets dropped by
+  // loadFragment, so create nav-tools if it isn't present.
+  let navTools = nav.querySelector('.nav-tools');
+  if (!navTools) {
+    navTools = document.createElement('div');
+    navTools.classList.add('nav-tools');
+    nav.append(navTools);
   }
+
+  // Sign In + language selector (WKND top-right controls). The language
+  // toggle opens a grouped country -> locale dropdown, mirroring wknd.site.
+  if (!navTools.querySelector('.nav-account')) {
+    const account = document.createElement('div');
+    account.className = 'nav-account';
+    account.innerHTML = `<a class="nav-signin" href="/us/en">Sign In</a>
+      <div class="nav-lang">
+        <button type="button" class="nav-lang-toggle" aria-expanded="false" aria-haspopup="true">en-US</button>
+        <div class="nav-lang-menu" hidden>
+          <ul>
+            <li class="nav-lang-country">United States<ul>
+              <li><a href="/us/en">en-US</a></li>
+              <li><a href="/us/es">es-US</a></li>
+            </ul></li>
+            <li class="nav-lang-country">Canada<ul>
+              <li><a href="/ca/en">en-CA</a></li>
+              <li><a href="/ca/fr">fr-CA</a></li>
+            </ul></li>
+            <li class="nav-lang-country">Switzerland<ul>
+              <li><a href="/ch/de">de-CH</a></li>
+              <li><a href="/ch/fr">fr-CH</a></li>
+              <li><a href="/ch/it">it-CH</a></li>
+            </ul></li>
+            <li class="nav-lang-country">Germany<ul>
+              <li><a href="/de/de">de-DE</a></li>
+            </ul></li>
+            <li class="nav-lang-country">France<ul>
+              <li><a href="/fr/fr">fr-FR</a></li>
+            </ul></li>
+            <li class="nav-lang-country">Spain<ul>
+              <li><a href="/es/es">es-ES</a></li>
+            </ul></li>
+            <li class="nav-lang-country">Italy<ul>
+              <li><a href="/it/it">it-IT</a></li>
+            </ul></li>
+          </ul>
+        </div>
+      </div>`;
+    navTools.append(account);
+
+    const langToggle = account.querySelector('.nav-lang-toggle');
+    const langMenu = account.querySelector('.nav-lang-menu');
+    const closeLang = () => {
+      langToggle.setAttribute('aria-expanded', 'false');
+      langMenu.hidden = true;
+    };
+    langToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = langToggle.getAttribute('aria-expanded') === 'true';
+      langToggle.setAttribute('aria-expanded', open ? 'false' : 'true');
+      langMenu.hidden = open;
+    });
+    document.addEventListener('click', (e) => {
+      if (!account.contains(e.target)) closeLang();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Escape') closeLang();
+    });
+  }
+
+  const search = document.createElement('div');
+  search.className = 'nav-search';
+  search.innerHTML = `<form role="search" class="nav-search-form" action="/us/en/magazine">
+      <span class="nav-search-icon" aria-hidden="true"></span>
+      <label class="nav-search-label" for="nav-search-input">Search</label>
+      <input id="nav-search-input" name="q" type="search" placeholder="Search" autocomplete="off">
+    </form>`;
+  navTools.append(search);
 
   // hamburger for mobile
   const hamburger = document.createElement('div');
@@ -187,17 +259,8 @@ export default async function decorate(block) {
   toggleMenu(nav, navSections, isDesktop.matches);
   isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
 
-  // Dark utility bar (WKND): Sign In + region, above the main white nav bar.
-  const utilityBar = document.createElement('div');
-  utilityBar.className = 'nav-utility';
-  utilityBar.innerHTML = `<div class="nav-utility-inner">
-      <a class="nav-utility-signin" href="/us/en">Sign In</a>
-      <span class="nav-utility-lang">EN-US</span>
-    </div>`;
-
   const navWrapper = document.createElement('div');
   navWrapper.className = 'nav-wrapper';
-  navWrapper.append(utilityBar);
   navWrapper.append(nav);
   block.append(navWrapper);
 }
