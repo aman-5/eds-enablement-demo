@@ -69,9 +69,32 @@ var CustomImportScript = (() => {
       const copy = document.createElement("p");
       copy.textContent = "\u24B8 2019, WKND Site.";
       main.append(copy);
+      const linkOf = (label, href) => {
+        const a = document.createElement("a");
+        a.href = href;
+        a.textContent = label;
+        return a;
+      };
       const attribution = document.createElement("p");
-      attribution.textContent = "WKND is a fictitious adventure and travel website created by Adobe to demonstrate how anyone can build a beautiful, feature-rich website with Adobe Experience Manager.";
+      attribution.append(
+        document.createTextNode("WKND is a fictitious adventure and travel website created by Adobe to demonstrate how anyone can use Adobe Experience Manager to build a beautiful, feature-rich website over a single weekend. This site is built entirely with Adobe Experience Manager "),
+        linkOf("Core Components", "https://docs.adobe.com/content/help/en/experience-manager-core-components/using/introduction.html"),
+        document.createTextNode(" and "),
+        linkOf("Archetype", "https://github.com/adobe/aem-project-archetype"),
+        document.createTextNode(" that are available as open source code to the public. The entire "),
+        linkOf("site source code", "https://github.com/adobe/aem-guides-wknd/"),
+        document.createTextNode(" is available as open source as well and is accompanied with a "),
+        linkOf("detailed tutorial", "https://docs.adobe.com/content/help/en/experience-manager-learn/getting-started-wknd-tutorial-develop/overview.html"),
+        document.createTextNode(" on how to recreate the site.")
+      );
       main.append(attribution);
+      const stock = document.createElement("p");
+      stock.append(
+        document.createTextNode("Many of the beautiful images in the WKND site are available for purchase via "),
+        linkOf("Adobe Stock", "https://stock.adobe.com/"),
+        document.createTextNode(".")
+      );
+      main.append(stock);
       return [{
         element: main,
         path: "/footer",

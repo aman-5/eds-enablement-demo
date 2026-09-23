@@ -1,96 +1,89 @@
-Let me analyze the reference site's Sign In / language behavior and the mobile hamburger, plus verify the desktop hover on my current build.Let me click the language toggle to see the language list and Sign In behavior on the reference.Now let me inspect my current build — the desktop hover on nav links, the hamburger close icon, and any logo overlap.Let me check my current build's desktop hover behavior and the hamburger/logo layout.# WKND Fidelity Fix Plan
+# WKND Fidelity Fix Plan — Reference-Driven Rebuild
 
-Goal: bring `main--eds-enablement-demo--aman-5.aem.live/us/en` and its sub-pages into visual and structural parity with the reference site `wknd.site/us/en.html`. **Homepage-first**, then remaining pages. **Active task: Phase 1a-2 — Header refinements (Sign In + language selector + mobile hamburger).**
+**Agreed — dropping `sanjanaJat98/eds-site-wknd`.** It's the weaker reference (different block names, different DA content source, only design-portable). We'll focus on the three strong sources:
+1. **`github.com/brijeshtewari/eds-capstone`** — primary. Structural twin of our repo (same block names: `carousel-hero`, `cards`, `cards-article`, `columns`, `accordion-faq`, `header`, `footer`, `hero`, `widget`, plus variants). Its block CSS/JS adapts into ours with minimal re-wiring.
+2. **PR #20** on that repo — direction to follow: consolidate `cards-promo`/`columns-featured` into base blocks as **CSS class variants**; **self-host Asar + Source Sans Pro** and drop the render-blocking Google Fonts link (deferred `loadFonts()`). Helps fidelity *and* Lighthouse.
+3. **`wknd.site/us/en.html`** — live visual ground truth.
 
-## Reference targets (confirmed from wknd.site)
-- **Header top-right area**: a light **`en-US` language toggle** that, when clicked, opens a **country/locale dropdown** — United States (en-US, es-US), Canada (en-CA, fr-CA), Switzerland (de-CH, fr-CH, it-CH), Germany (de-DE), France (fr-FR), Spain (es-ES), Italy (it-IT) — plus a **"Sign In" link** shown beside the language toggle. This is a light element, **not** the old dark bar.
-- **Header main bar**: WKND **logo** left; nav links (Magazine, Adventures, FAQs, About Us) + search grouped right; pinned/sticky on scroll.
-- **Desktop nav hover**: nav links get the WKND **yellow background** on hover/focus.
-- **Mobile hamburger**: opens a **dark left-sliding drawer**; the trigger icon should **stay as a hamburger (3 lines), not morph into an ✕**; logo/top-bar elements must **not overlap** the drawer or each other.
-- **Footer**: WKND logo, footer nav, "Follow Us" social icon buttons, divider, full fictitious-site copyright paragraph with source-code links.
-- **Homepage carousel**: text-overlay hero slides with prev/next arrows and slide tabs.
-- **Magazine**: larger article imagery; members-only articles show a lock badge.
-- **Adventures / About Us / FAQs**: layouts that match reference (no tabs where reference doesn't use them).
+**Honest answer restated:** a blind copy still won't "just work" (content source differs, some structures differ), but because `eds-capstone` mirrors our block names, porting block-by-block — their CSS/JS design, our content wiring — is low-risk, and I verify each in preview before moving on. I couldn't reliably read their raw block JS via web fetch (some 404s); in Execute mode I'll clone with `git`/`gh` and read the real files so every change is anchored to their actual code, not guesswork.
 
-## Decisions (confirmed with user)
-- **Header top bar** → No dark bar. Light header. Now also: restore a light **Sign In** link beside the language toggle, and add the **full multi-locale language dropdown** matching reference.
-- **Priority** → Homepage first, header being fully finished before carousel.
+## Reference sources (priority order)
+1. **Primary repo**: `github.com/brijeshtewari/eds-capstone` (structural twin).
+2. **PR #20** on that repo (variant consolidation + self-hosted fonts).
+3. **Live visual reference**: `https://wknd.site/us/en.html`.
+4. **Our content** (unchanged): our DA source.
 
-## Evidence gathered (latest inspection)
-- **Sign In missing**: reference shows a "Sign In" link beside the language toggle; my current build dropped it entirely when removing the dark bar. → restore as a light link.
-- **Language support missing**: reference `en-US` toggle expands a grouped country→locale dropdown (7 countries, 11 locales); my build shows only static `en-US` text with no dropdown. → build the locale dropdown.
-- **Mobile hamburger**: default EDS behavior morphs the hamburger into an ✕ and can overlap the logo when the dark drawer is open; reference keeps a hamburger-style trigger and no overlap. → keep 3-line icon (no cross), fix overlap/stacking.
-- **Desktop hover**: nav links have no submenus (`numDropdowns: 0`); yellow-background hover rule is present — needs a live hover verification.
-- **Logo/layout confirmed good**: logo left (x=120), links grouped right (first link x≈716), search far right — matches reference.
+*(Removed: `sanjanaJat98/eds-site-wknd`.)*
+
+## Method (per block)
+1. Read the matching block's `.js`/`.css` + README in `eds-capstone`; cross-check PR #20 for the variant approach.
+2. Compare to `wknd.site` for that section.
+3. Port design/behavior into OUR matching block, keeping our content DOM wiring (decorate defensively for omitted/extra cells).
+4. Verify in local preview (snapshot/evaluate) at desktop + mobile; screenshot only for final pixel check.
+5. Lint; never edit `scripts/aem.js`; no hand-edited content HTML.
 
 ## Constraints
-- Do not hand-edit content HTML under the content directory; regenerate via the import script if content changes are needed.
-- Never edit `scripts/aem.js`. Scope CSS to `.header`/`.blockname`.
-- Keep Lighthouse > 90; every PR must include the `{branch}--{repo}--{owner}.aem.page/{path}` preview link.
-- Verify each fix in the preview (snapshot/evaluate) before moving on; screenshots only for final pixel checks.
+- Do not hand-edit content HTML; regenerate via the import script if content must change.
+- Never edit `scripts/aem.js`. Scope CSS to the block class.
+- Keep Lighthouse > 90; PR must include the `{branch}--{repo}--{owner}.aem.page/{path}` preview link.
 
 ## Checklist
 
-### Phase 1a — Header / Navigation (DONE)
-- [x] Remove the invented dark **"Sign In" utility bar** from `blocks/header/header.js`.
-- [x] Add a light **`en-US` language toggle**.
-- [x] Fix nav layout so logo is **left**, menu links + search grouped **right**.
-- [x] Build the tools/search container unconditionally (search box now renders).
-- [x] Make the header **sticky/fixed** on scroll (desktop + mobile).
-- [x] Use the WKND **logo image** (SVG) for the brand instead of text "WKND".
-- [x] Rebuild the **search box** as a light-grey filled pill with magnifier icon.
-- [x] Rebuild the **mobile menu** as a dark left-sliding drawer.
+### Phase 0 — Reference intake (do first)
+- [ ] Clone `brijeshtewari/eds-capstone` locally (read-only scratch dir) for side-by-side reading.
+- [ ] Read `eds-capstone` blocks: `header`, `carousel-hero`, `hero`, `cards`, `cards-article`, `columns`, `accordion-faq`, `tabs-*`, `footer` (`.js`/`.css` + READMEs).
+- [ ] Review PR #20 diff (cards/columns variant consolidation + `fonts.css`/`head.html` self-hosted fonts).
+- [ ] Map their blocks → our blocks; note any structural/row-cell differences.
+- [ ] Diff their `styles/styles.css` + brand tokens vs ours; note font/color/spacing gaps.
 
-### Phase 1a-2 — Header refinements ← START HERE
-- [ ] **Restore "Sign In"** as a light link beside the language toggle (top-right), matching reference (not a dark bar).
-- [ ] **Add the language selector dropdown**: `en-US` toggle expands a grouped country→locale list (US, Canada, Switzerland, Germany, France, Spain, Italy) with the reference locales/URLs; close on outside-click/escape; keyboard accessible.
-- [ ] **Fix the mobile hamburger**: keep it a **3-line hamburger icon (no ✕/cross morph)** when the drawer opens; ensure the trigger toggles the drawer open/closed correctly (back-and-forth).
-- [ ] **Fix mobile overlap**: ensure the WKND logo and top-bar controls don't overlap the drawer or each other when open (correct stacking / drawer offset).
-- [ ] **Verify desktop hover**: confirm Magazine/Adventures/FAQs/About Us show the yellow-background hover/focus state on desktop; adjust if the hover target/padding is off.
-- [ ] Re-verify header at mobile (<900px) and desktop (≥900px); lint JS/CSS.
+### Phase 1a — Header (re-audit against eds-capstone)
+- [ ] Compare our header.js/.css to their `blocks/header`; reconcile remaining gaps (Sign In, language dropdown, hamburger, sticky, hover, logo) to match their impl + wknd.site.
+- [ ] Re-verify desktop + mobile.
 
 ### Phase 1b — Homepage carousel/hero
-- [ ] Rework `carousel-hero` to match reference: image with **text overlay** (heading, description, CTA), prev/next arrows, and slide tabs styled per reference.
-- [ ] Verify slide transitions, controls, and CTA button styling.
+- [ ] Port their `carousel-hero` design/behavior into ours: image with **text overlay** (heading, description, CTA), prev/next arrows, slide dots/tabs — matching wknd.site.
+- [ ] Verify transitions, controls, CTA styling.
 
 ### Phase 1c — Homepage sections
-- [ ] Match Featured Article, Recent Articles cards, Next Adventures teaser, and "Where do you want to go?" grid to reference (image sizes, spacing, CTA buttons, dividers).
+- [ ] Match Featured Article, Recent Articles cards, Next Adventures teaser, "Where do you want to go?" grid using their `cards`/`columns` (+ `cards-promo`/`columns-featured` variants per PR #20).
 
 ### Phase 1d — Footer
-- [ ] Match footer **layout, styling, and text** to reference: WKND logo, footer nav, "Follow Us" social icon buttons, divider, and full copyright/attribution paragraph with links.
-- [ ] Update footer content via the import script if the source text differs (no hand-edited HTML).
-- [ ] Verify footer against reference.
+- [ ] Port their `footer` design into ours: WKND logo, footer nav, "Follow Us" social icon buttons, divider, full copyright/attribution paragraph.
+- [ ] Update footer content via import script only if source text differs.
+- [ ] Verify against reference.
 
 ### Phase 1e — Homepage validation
-- [ ] Full homepage visual comparison against wknd.site; log remaining diffs.
+- [ ] Full homepage visual comparison vs wknd.site; log remaining diffs.
 
 ### Phase 2 — Magazine page
-- [ ] Match article **image sizes** and card layout to reference.
-- [ ] Add the **members-only lock badge/indicator** to gated articles.
+- [ ] Match article image sizes + card layout (their `cards`/`cards-article`).
+- [ ] Add members-only lock badge/indicator on gated articles.
 - [ ] Verify against reference.
 
 ### Phase 3 — Adventures page
-- [ ] Replace the **tabs** UI with the reference layout (reference does not use tabs for current adventures).
-- [ ] Match the adventures **carousel** styling to reference.
-- [ ] Verify listing and detail layouts against reference.
+- [ ] Replace tabs UI with the reference layout (reference has no tabs for current adventures); if a filter is needed, follow their `tabs-filter`.
+- [ ] Match adventures carousel to their `carousel-hero`/`carousel-gallery`.
+- [ ] Verify listing + detail layouts.
 
 ### Phase 4 — About Us page
-- [ ] Rebuild sections/blocks to match reference layout and styling (remove any tabs not present in reference).
+- [ ] Rebuild sections/blocks to match reference (remove tabs not present in reference) using their `columns`/`hero`.
 - [ ] Verify against reference.
 
 ### Phase 5 — FAQs page
-- [ ] Match FAQ (accordion) styling and structure to reference.
+- [ ] Match FAQ accordion to their `accordion-faq` design/structure.
 - [ ] Verify against reference.
 
 ### Phase 6 — Global styling pass
-- [ ] Confirm brand fonts (Asar headings, Source Sans Pro body), colors (yellow accent `#ffea00`), and button styles across all pages.
-- [ ] Run a full-site visual comparison against wknd.site and resolve remaining diffs.
+- [ ] Adopt PR #20 approach: **self-host Asar + Source Sans Pro**, drop render-blocking Google Fonts link, load via deferred `loadFonts()`; update `fonts.css`/`head.html`.
+- [ ] Reconcile brand colors (accent `#ffea00`), button styles, spacing with their `styles/`.
+- [ ] Consolidate any duplicate blocks into class variants where their repo does (per PR #20), if it reduces divergence.
+- [ ] Full-site visual comparison vs wknd.site; resolve remaining diffs.
 
 ### Phase 7 — Validation & delivery
-- [ ] Lint (CSS/JS) and confirm no `scripts/aem.js` edits.
-- [ ] Re-verify Lighthouse > 90.
+- [ ] Lint (CSS/JS); confirm no `scripts/aem.js` edits; no hand-edited content HTML.
+- [ ] Re-verify Lighthouse > 90 (self-hosted fonts should help).
 - [ ] Prepare PR with the required `.aem.page` preview link.
 
 ---
 
-**Execution note:** Next I'll implement **Phase 1a-2** — restore the light **Sign In** link, add the **multi-locale language dropdown**, fix the **mobile hamburger** (keep 3 lines, no ✕, correct toggle) and its **overlap**, and confirm the **desktop yellow hover**. Applying these edits requires **Execute mode** (plan mode is read-only). Approve / switch to Execute mode and I'll proceed.
+**Execution note:** Reference set now narrowed to **`brijeshtewari/eds-capstone` + PR #20 + `wknd.site`** (sanjanaJat98 dropped). I'll start with **Phase 0** — clone `eds-capstone` read-only, read the real block files + PR #20 diff, and build the block-mapping + style/font diff — then re-audit the header and move to the carousel. Cloning and edits require **Execute mode** (plan mode is read-only). Approve / switch to Execute mode and I'll begin.

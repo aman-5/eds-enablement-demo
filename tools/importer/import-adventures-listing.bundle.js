@@ -187,7 +187,10 @@ var CustomImportScript = (() => {
     const pageBlocks = [];
     template.blocks.forEach((b) => b.instances.forEach((sel) => {
       let els = [...document.querySelectorAll(sel)];
-      if (b.name === "cards-article") els = els.slice(0, 1);
+      if (b.name === "cards-article") {
+        els.slice(1).forEach((extra) => extra.remove());
+        els = els.slice(0, 1);
+      }
       els.forEach((el) => pageBlocks.push({ name: b.name, selector: sel, element: el }));
     }));
     console.log(`Found ${pageBlocks.length} block instances on page`);

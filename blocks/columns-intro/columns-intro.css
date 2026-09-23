@@ -97,3 +97,52 @@
     aspect-ratio: auto;
   }
 }
+
+/* Members Only: padlock badge overlaid on the teaser image */
+.columns-intro-locked .columns-intro-img-col {
+  position: relative;
+}
+
+.columns-intro-locked .columns-intro-img-col::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgb(32 32 32 / 35%);
+  pointer-events: none;
+}
+
+.columns-intro-locked .columns-intro-lock {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  width: 44px;
+  height: 44px;
+}
+
+/* padlock drawn with CSS: shackle (arc) + body */
+.columns-intro-locked .columns-intro-lock::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 20px;
+  border: 3px solid #fff;
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+}
+
+.columns-intro-locked .columns-intro-lock::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 34px;
+  height: 26px;
+  border-radius: 4px;
+  background: #fff;
+}
