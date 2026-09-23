@@ -31,16 +31,16 @@
   margin: 9px 0 0;
 }
 
-/* Title — source .cmp-image-list__item-title link: 18px / 400 / normal-case /
-   dark #202020. Scoped to the base (article/adventure) grid so the
-   .contributors variant keeps its serif name styling. */
+/* Title — source .cmp-image-list__item-title: 18px / 600 / uppercase / #202020
+   (per inspected source computed styles). Scoped to the base (article/adventure)
+   grid so the .contributors variant keeps its serif name styling. */
 .cards-article:not(.contributors) .cards-article-card-body h3 {
   margin: 0;
   font-family: var(--body-font-family);
   font-size: 18px;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 27px;
-  text-transform: none;
+  text-transform: uppercase;
   color: var(--text-color);
 }
 
