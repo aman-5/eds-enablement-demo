@@ -1,0 +1,156 @@
+{
+  "url": "https://wknd-trendsetters.site/about-us",
+  "representativeUrl": "https://wknd-trendsetters.site/about-us",
+  "documentPath": "/about-us",
+  "coverageGaps": [],
+  "sections": [
+    {
+      "sectionNumber": 1,
+      "id": "rc1",
+      "selector": "#main-content > header.section.secondary-section",
+      "hint": "block",
+      "visualStyle": "light grey (secondary-section), padded",
+      "hasBg": true,
+      "overview": "Page intro. Two-column layout: on the left a large heading, a subheading paragraph, and two CTA buttons; on the right a stacked group of three images.",
+      "sequences": [
+        {
+          "sequence": 1,
+          "description": "Large heading 'Fresh looks, bold stories, real life', subheading paragraph, and two call-to-action buttons ('See case', 'All stories') in the left column."
+        },
+        {
+          "sequence": 2,
+          "description": "Three images stacked/grouped in the right column (hip-hop dance, family vacation, music concert)."
+        }
+      ]
+    },
+    {
+      "sectionNumber": 2,
+      "id": "rc2",
+      "selector": "#main-content > section.section:nth-of-type(1)",
+      "hint": "block",
+      "visualStyle": "white (default)",
+      "hasBg": false,
+      "overview": "Article/case-study header. Two-column layout: large feature image on the left; breadcrumb, heading, and author/date byline on the right.",
+      "sequences": [
+        {
+          "sequence": 1,
+          "description": "Large feature image (adventure spots, 3x2 aspect) in the left column."
+        },
+        {
+          "sequence": 2,
+          "description": "Right column: breadcrumb (Home > Case studies), heading 'Fresh looks, bold moves, real stories', author byline 'By Taylor Brooks', and 'June 12, 2024 • 4 min read' meta."
+        }
+      ]
+    },
+    {
+      "sectionNumber": 3,
+      "id": "rc3",
+      "selector": "#main-content > section.section.secondary-section:nth-of-type(2)",
+      "hint": "block",
+      "visualStyle": "light grey (secondary-section), padded",
+      "hasBg": true,
+      "overview": "Image gallery section. Centered heading and subheading, followed by a 4-column grid of eight square images.",
+      "sequences": [
+        {
+          "sequence": 1,
+          "description": "Centered heading 'Style in every snapshot' and paragraph 'Peek the latest looks in action'."
+        },
+        {
+          "sequence": 2,
+          "description": "Grid of eight uniform square images (4-column desktop, 2-column tablet, 1-column mobile). Images only, no text."
+        }
+      ]
+    },
+    {
+      "sectionNumber": 4,
+      "id": "rc4",
+      "selector": "#main-content > section.section:nth-of-type(3)",
+      "hint": "block",
+      "visualStyle": "white (default)",
+      "hasBg": false,
+      "overview": "Interactive testimonial tabs. Active tab shows a person's image alongside their name, role, and quote. A 4-item tab menu of avatar cards (name + role) sits below to switch panels.",
+      "sequences": [
+        {
+          "sequence": 1,
+          "description": "Tabbed interface with four switchable panels (Alex Rivera, Taylor Kim, Jordan Ellis, Morgan Blake). Each panel: person image + name + role + testimonial quote. Tab menu of four avatar cards (avatar image, name, role) toggles the active panel."
+        }
+      ]
+    },
+    {
+      "sectionNumber": 5,
+      "id": "rc5",
+      "selector": "#main-content > section.section.secondary-section:nth-of-type(4)",
+      "hint": "block",
+      "visualStyle": "light grey (secondary-section), padded",
+      "hasBg": true,
+      "overview": "Latest articles section. Centered heading and subheading, followed by a 4-column grid of article cards.",
+      "sequences": [
+        {
+          "sequence": 1,
+          "description": "Centered heading 'Latest articles' and paragraph 'Fresh looks, bold moves'."
+        },
+        {
+          "sequence": 2,
+          "description": "Grid of four linked article cards, each with an image, a category tag (e.g. 'Casual Cool'), a date (e.g. 'May 12'), and a heading (e.g. 'Tennis style, redefined'). Whole card is a link."
+        }
+      ]
+    },
+    {
+      "sectionNumber": 6,
+      "id": "rc6",
+      "selector": "#main-content > section.section:nth-of-type(5)",
+      "hint": "block",
+      "visualStyle": "white (default)",
+      "hasBg": false,
+      "overview": "FAQ section. Heading and subheading, followed by a list of four expandable question/answer items.",
+      "sequences": [
+        {
+          "sequence": 1,
+          "description": "Heading 'Got questions? We've got answers.' and subheading 'Fashion FAQs, answered fast'."
+        },
+        {
+          "sequence": 2,
+          "description": "Four expandable FAQ items (question summary + collapsible answer), rendered as HTML <details> elements."
+        }
+      ]
+    },
+    {
+      "sectionNumber": 7,
+      "id": "rc7",
+      "selector": "#main-content > section.section.inverse-section",
+      "hint": "block",
+      "visualStyle": "dark (inverse-section), full-width background image with dark overlay",
+      "hasBg": true,
+      "overview": "Full-width closing hero. Background photo with a dark overlay; overlaid heading, subheading paragraph, and a single CTA button.",
+      "sequences": [
+        {
+          "sequence": 1,
+          "description": "Full-width banner with background image and dark overlay. Overlaid content: heading 'Fresh looks, bold stories, real life', subheading paragraph, and 'See more' CTA button."
+        }
+      ]
+    }
+  ],
+  "blockInventory": {
+    "localBlocks": [
+      "cards",
+      "columns",
+      "hero",
+      "header",
+      "footer",
+      "fragment",
+      "widget"
+    ],
+    "blockCollectionAvailable": [
+      { "name": "hero", "purpose": "Prominent banner: image, headline, optional CTA. Page intro." },
+      { "name": "columns", "purpose": "Side-by-side content in multiple columns." },
+      { "name": "cards", "purpose": "Grid of distinct items, each with image + title + text." },
+      { "name": "tabs", "purpose": "Switchable content panels with tab labels." },
+      { "name": "accordion", "purpose": "Collapsible sections; ideal for FAQs." },
+      { "name": "carousel", "purpose": "Rotating/swipable slides." },
+      { "name": "table", "purpose": "Tabular data in rows and columns." },
+      { "name": "video", "purpose": "Stand-alone embedded video." },
+      { "name": "embed", "purpose": "External video/social embeds." },
+      { "name": "search", "purpose": "Site content search input." }
+    ]
+  }
+}

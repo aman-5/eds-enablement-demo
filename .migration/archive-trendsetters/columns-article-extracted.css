@@ -1,0 +1,7 @@
+/* Block: columns-article -- extracted from source computed styles */
+/* block: display:grid; grid-template-columns:1fr 1fr (564px 564px); gap:24px; align-items:center */
+.columns-article { color: rgb(0, 0, 0); }
+.columns-article h2 { font-size: 40px; font-weight: 700; font-family: Syncopate, sans-serif; line-height: 44px; text-transform: uppercase; color: rgb(0,0,0); margin: 0; }
+.columns-article a { color: rgb(0,0,0); font-size: 16px; font-weight: 500; text-decoration: none; }
+/* byline paragraphs: 14px; line-height 22.4px; author black, date rgb(102,102,102); date margin-top 8px, byline block margin-top 16px */
+.columns-article img { object-fit: cover; border-radius: 20px; width: 100%; aspect-ratio: 3 / 2; }

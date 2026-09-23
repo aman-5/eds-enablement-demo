@@ -1,0 +1,47 @@
+/* eslint-disable */
+/* global WebImporter */
+import carouselHeroParser from './parsers/wknd-carousel-hero.js';
+import cleanupTransformer from './transformers/wknd-cleanup.js';
+
+const parsers = { 'carousel-hero': carouselHeroParser };
+
+const PAGE_TEMPLATE = {
+  name: 'adventure-detail',
+  urls: ['https://wknd.site/us/en/adventures/climbing-new-zealand.html'],
+  blocks: [
+    { name: 'carousel-hero', instances: ['.carousel.cmp-carousel'] },
+  ],
+  sections: [],
+};
+
+function findBlocksOnPage(document, template) {
+  const pageBlocks = [];
+  template.blocks.forEach((b) => b.instances.forEach((sel) => {
+    document.querySelectorAll(sel).forEach((el) => pageBlocks.push({ name: b.name, selector: sel, element: el }));
+  }));
+  console.log(`Found ${pageBlocks.length} block instances on page`);
+  return pageBlocks;
+}
+
+export default {
+  transform: (payload) => {
+    const { document, url, params } = payload;
+    const main = document.body;
+    const ep = { ...payload, template: PAGE_TEMPLATE };
+    cleanupTransformer('beforeTransform', main, ep);
+    const pageBlocks = findBlocksOnPage(document, PAGE_TEMPLATE);
+    pageBlocks.forEach((block) => {
+      if (!block.element.parentNode) return;
+      const parser = parsers[block.name];
+      if (parser) { try { parser(block.element, { document, url, params }); } catch (e) { console.error(`parse ${block.name}`, e); } }
+    });
+    cleanupTransformer('afterTransform', main, ep);
+    const hr = document.createElement('hr'); main.appendChild(hr);
+    WebImporter.rules.createMetadata(main, document);
+    WebImporter.rules.transformBackgroundImages(main, document);
+    WebImporter.rules.adjustImageUrls(main, url, params.originalURL);
+    const rawPath = new URL(params.originalURL).pathname.replace(/\/$/, '').replace(/\.html?$/, '');
+    const path = WebImporter.FileUtils.sanitizePath(rawPath === '' ? '/index' : rawPath);
+    return [{ element: main, path, report: { title: document.title, template: PAGE_TEMPLATE.name, blocks: pageBlocks.map((b) => b.name) } }];
+  },
+};

@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2026-09-23T06:28:44.982Z",
+  "threshold": 0.9,
+  "summary": {
+    "total": 1,
+    "flagged": 0,
+    "passed": 1
+  },
+  "pages": [
+    {
+      "path": "about-us",
+      "url": "https://wknd-trendsetters.site/about-us",
+      "score": 0.9327,
+      "status": "pass"
+    }
+  ]
+}
