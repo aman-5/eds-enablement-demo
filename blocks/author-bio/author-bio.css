@@ -42,7 +42,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: rgb(105 105 105);
+  color: var(--muted-text-color);
 }
 
 .author-bio .author-bio-body p.author-bio-social {

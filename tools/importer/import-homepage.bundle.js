@@ -35,13 +35,13 @@ var CustomImportScript = (() => {
   };
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // tools/importer/import-homepage.js
+  // import-homepage.js
   var import_homepage_exports = {};
   __export(import_homepage_exports, {
     default: () => import_homepage_default
   });
 
-  // tools/importer/parsers/wknd-carousel-hero.js
+  // parsers/wknd-carousel-hero.js
   function parse(element, { document: document2 }) {
     const items = Array.from(element.querySelectorAll(".cmp-carousel__item"));
     const cells = [];
@@ -79,7 +79,7 @@ var CustomImportScript = (() => {
     element.replaceWith(block);
   }
 
-  // tools/importer/parsers/wknd-columns-intro.js
+  // parsers/wknd-columns-intro.js
   function parse2(element, { document: document2 }) {
     const teaser = element.querySelector(".cmp-teaser") || element;
     const img = teaser.querySelector("img");
@@ -119,7 +119,7 @@ var CustomImportScript = (() => {
     element.replaceWith(block);
   }
 
-  // tools/importer/parsers/wknd-cards-article.js
+  // parsers/wknd-cards-article.js
   function parse3(element, { document: document2 }) {
     const items = Array.from(element.querySelectorAll(".cmp-image-list__item"));
     const cells = [];
@@ -152,7 +152,7 @@ var CustomImportScript = (() => {
     element.replaceWith(block);
   }
 
-  // tools/importer/parsers/wknd-hero-overlay.js
+  // parsers/wknd-hero-overlay.js
   function parse4(element, { document: document2 }) {
     const teaser = element.querySelector(".cmp-teaser") || element;
     const img = teaser.querySelector("img");
@@ -187,7 +187,7 @@ var CustomImportScript = (() => {
     element.replaceWith(block);
   }
 
-  // tools/importer/transformers/wknd-cleanup.js
+  // transformers/wknd-cleanup.js
   var TransformHook = { beforeTransform: "beforeTransform", afterTransform: "afterTransform" };
   function rewriteLinks(element) {
     element.querySelectorAll("a[href]").forEach((a) => {
@@ -224,7 +224,20 @@ var CustomImportScript = (() => {
         // Adobe DX tracking / ID-sync iframes and pixels (non-content)
         'iframe[src*="demdex"]',
         'a[href*="demdex"]',
-        '[id*="destination-publishing"]'
+        '[id*="destination-publishing"]',
+        // Article-detail chrome: related-articles sidebar and share widget
+        ".cmp-layoutcontainer--sidebar",
+        '[class*="sidebar"]',
+        ".social",
+        ".cmp-sharing",
+        // Content-fragment internal title duplicates the page H1 — drop it
+        ".cmp-contentfragment__title",
+        // Carousel prev/next/indicator chrome leaks as "Previous Next" text
+        ".cmp-carousel__actions",
+        ".cmp-carousel__action",
+        ".cmp-carousel__indicators",
+        ".cmp-tabs__tablist",
+        ".cmp-image-list__item-button"
       ]);
     }
     if (hookName === TransformHook.afterTransform) {
@@ -232,7 +245,7 @@ var CustomImportScript = (() => {
     }
   }
 
-  // tools/importer/transformers/wknd-trendsetters-sections.js
+  // transformers/wknd-trendsetters-sections.js
   var SECTION_MARKER_ATTR = "data-excat-section-id";
   function querySection(root, selectors) {
     for (const sel of selectors) {
@@ -274,7 +287,47 @@ var CustomImportScript = (() => {
     }
   }
 
-  // tools/importer/import-homepage.js
+  // transformers/wknd-dynamic-listings.js
+  function precedingHeadingText(table) {
+    let el = table.previousElementSibling;
+    let hops = 0;
+    while (el && hops < 6) {
+      if (/^H[1-6]$/.test(el.tagName)) return (el.textContent || "").trim();
+      const h = el.querySelector && el.querySelector("h1,h2,h3,h4,h5,h6");
+      if (h) return (h.textContent || "").trim();
+      el = el.previousElementSibling;
+      hops += 1;
+    }
+    return "";
+  }
+  function transform3(hookName, element, payload) {
+    if (hookName !== "afterTransform") return;
+    const rules = payload.template && payload.template.dynamicListings || [];
+    if (!rules.length) return;
+    const tables = Array.from(element.querySelectorAll("table")).filter((t) => {
+      const head = t.querySelector("tr");
+      const label = (head && head.textContent || "").trim();
+      return /^cards[\s-]*article\b/i.test(label) && !/contributor/i.test(label);
+    });
+    let ruleIdx = 0;
+    tables.forEach((table) => {
+      const heading = precedingHeadingText(table);
+      let rule = rules.find((r) => r.match && r.match.test(heading));
+      if (!rule) {
+        rule = rules[ruleIdx];
+      }
+      if (!rule) return;
+      ruleIdx += 1;
+      const cells = Object.entries(rule.config).map(([k, v]) => [k, String(v)]);
+      const dyn = WebImporter.Blocks.createBlock(document, {
+        name: rule.name || "Cards Article (dynamic)",
+        cells
+      });
+      table.replaceWith(dyn);
+    });
+  }
+
+  // import-homepage.js
   var parsers = {
     "carousel-hero": parse,
     "columns-intro": parse2,
@@ -294,11 +347,17 @@ var CustomImportScript = (() => {
     sections: [
       { id: "rc1", name: "hero", selector: [".carousel.cmp-carousel--hero"], style: null, blocks: ["carousel-hero"], defaultContent: [] },
       { id: "rc2", name: "featured", selector: [".teaser.cmp-teaser--featured"], style: "light", blocks: ["columns-intro"], defaultContent: [] }
+    ],
+    // Convert the two static card rails into the dynamic (index-driven) variant.
+    dynamicListings: [
+      { match: /recent articles/i, name: "Cards Article (dynamic)", config: { source: "/us/en/magazine/", limit: "4" } },
+      { match: /where do you want to go/i, name: "Cards Article (dynamic)", config: { source: "/us/en/adventures/", limit: "4" } }
     ]
   };
   var transformers = [
     transform,
-    ...PAGE_TEMPLATE.sections && PAGE_TEMPLATE.sections.length > 1 ? [transform2] : []
+    ...PAGE_TEMPLATE.sections && PAGE_TEMPLATE.sections.length > 1 ? [transform2] : [],
+    transform3
   ];
   function executeTransformers(hookName, element, payload) {
     const enhancedPayload = __spreadProps(__spreadValues({}, payload), { template: PAGE_TEMPLATE });

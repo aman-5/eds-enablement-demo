@@ -16,6 +16,26 @@
   <meta property="og:title" content="Page not found">
   <script nonce="aem" src="/scripts/scripts.js" type="module"></script>
   <script nonce="aem" type="module">
+    // Redirects: on a 404, look up the current path in the redirects sheet and
+    // forward if a match exists. New redirects are added to /redirects.json
+    // (a sheet) with no code change.
+    (async () => {
+      try {
+        const here = window.location.pathname.replace(/\/+$/, '') || '/';
+        const resp = await fetch('/redirects.json');
+        if (!resp.ok) return;
+        const { data } = await resp.json();
+        if (!Array.isArray(data)) return;
+        const hit = data.find((r) => (r.Source || '').replace(/\/+$/, '') === here);
+        if (hit && hit.Destination) {
+          window.location.replace(hit.Destination);
+        }
+      } catch (e) {
+        // ignore — fall through to the normal 404 page
+      }
+    })();
+  </script>
+  <script nonce="aem" type="module">
     window.addEventListener('load', () => {
       if (document.referrer) {
         const { origin, pathname } = new URL(document.referrer);

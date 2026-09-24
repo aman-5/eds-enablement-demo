@@ -29,7 +29,7 @@
 
 .tabs .tabs-tab:hover,
 .tabs .tabs-tab:focus-visible {
-  color: #000;
+  color: var(--link-hover-color);
 }
 
 .tabs .tabs-tab[aria-selected="true"] {

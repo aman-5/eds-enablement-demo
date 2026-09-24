@@ -1,8 +1,8 @@
 /* WKND header — mobile-first */
 
 :root {
-  --wknd-brand-yellow: #ffea00;
-  --wknd-dark: #202020;
+  --wknd-brand-yellow: var(--accent-color);
+  --wknd-dark: var(--dark-color);
 }
 
 /* The <header> reserves header height of space in flow; the actual bar floats.
@@ -18,7 +18,7 @@ header .nav-wrapper {
   inset: 0 0 auto;
   z-index: 1030;
   width: 100%;
-  background-color: #fff;
+  background-color: var(--background-color);
 }
 
 header nav {
@@ -40,7 +40,7 @@ header nav a {
 /* --- Utility bar (dark) --- */
 header .nav-utility {
   background-color: var(--wknd-dark);
-  color: #fff;
+  color: var(--background-color);
 }
 
 header .nav-utility-inner {
@@ -55,7 +55,7 @@ header .nav-utility-inner {
 }
 
 header .nav-utility a {
-  color: #ebebeb;
+  color: var(--light-color);
   font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.03em;
@@ -76,7 +76,7 @@ header .nav-locale-toggle {
   gap: 8px;
   background: none;
   border: 0;
-  color: #ebebeb;
+  color: var(--light-color);
   font: inherit;
   font-size: 14px;
   text-transform: uppercase;
@@ -116,7 +116,7 @@ header .nav-locale-panel {
   right: 0;
   top: 100%;
   margin-top: 8px;
-  background: #fff;
+  background: var(--background-color);
   color: var(--wknd-dark);
   min-width: 220px;
   box-shadow: 0 2px 8px rgb(0 0 0 / 20%);
@@ -151,7 +151,7 @@ header .nav-locale-panel ul ul {
 }
 
 header .nav-locale-panel ul ul a {
-  color: #555;
+  color: var(--muted-dark-color);
   font-size: 12px;
 }
 

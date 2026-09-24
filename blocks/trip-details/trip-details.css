@@ -14,7 +14,7 @@
   letter-spacing: 0.06em;
   line-height: 1.4;
   text-transform: uppercase;
-  color: rgb(105 105 105);
+  color: var(--muted-text-color);
 }
 
 .trip-details dd {

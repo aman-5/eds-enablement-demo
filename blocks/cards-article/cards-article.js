@@ -62,16 +62,49 @@ function readConfig(block) {
   return config;
 }
 
+/** Wrap each card image in a link to the card destination (source behaviour). */
+function linkCardImages(ul) {
+  ul.querySelectorAll('li').forEach((li) => {
+    const imageDiv = li.querySelector('.cards-article-card-image');
+    const pic = imageDiv && imageDiv.querySelector('picture');
+    const titleLink = li.querySelector('.cards-article-card-body h3 a[href]');
+    if (pic && titleLink && !imageDiv.querySelector('a')) {
+      const a = document.createElement('a');
+      a.href = titleLink.getAttribute('href');
+      a.setAttribute('aria-hidden', 'true');
+      a.setAttribute('tabindex', '-1');
+      a.className = 'cards-article-card-image-link';
+      pic.replaceWith(a);
+      a.append(pic);
+    }
+  });
+}
+
+/** Render the <ul> of cards for the given activity filter into `ul`. */
+function renderCards(ul, items, activity, limit) {
+  const act = (activity || '').trim().toLowerCase();
+  let list = items.filter((row) => !act || act === 'all'
+    || (row.activity || '').trim().toLowerCase() === act);
+  if (limit > 0) list = list.slice(0, limit);
+  ul.textContent = '';
+  list.forEach((row) => ul.append(buildCard(document, row)));
+  linkCardImages(ul);
+}
+
 async function decorateDynamic(block) {
   const config = readConfig(block);
   const source = config.source || '/us/en/';
-  const limit = Number.parseInt(config.limit, 10) || 4;
+  // limit: a number caps the list; "all"/0/absent renders every match.
+  const rawLimit = (config.limit || '').toLowerCase();
+  const limit = rawLimit && rawLimit !== 'all' ? Number.parseInt(rawLimit, 10) : 0;
+  const activity = (config.activity || '').trim().toLowerCase();
+  const exclude = (config.exclude || '').replace(/\/$/, ''); // path to omit (e.g. current page)
+  // filters: comma-separated activity categories -> render filter buttons.
+  const filters = (config.filters || '').split(',').map((s) => s.trim()).filter(Boolean);
   const root = source.replace(/\/$/, '');
   const rootDepth = root.split('/').filter(Boolean).length;
 
-  const ul = document.createElement('ul');
   block.textContent = '';
-  block.append(ul);
 
   let data;
   try {
@@ -91,11 +124,42 @@ async function decorateDynamic(block) {
       return path.split('/').filter(Boolean).length === rootDepth + 1;
     })
     .filter((row) => !/noindex/i.test(row.robots || ''))
+    // optional static activity filter (related rails)
+    .filter((row) => !activity || (row.activity || '').trim().toLowerCase() === activity)
+    // optional single-path exclusion (related rail excludes the current page)
+    .filter((row) => !exclude || (row.path || '').replace(/\/$/, '') !== exclude)
     // newest first (numeric lastModified seconds); missing dates sort last
-    .sort((a, b) => (Number(b.lastModified) || 0) - (Number(a.lastModified) || 0))
-    .slice(0, limit);
+    .sort((a, b) => (Number(b.lastModified) || 0) - (Number(a.lastModified) || 0));
 
-  items.forEach((row) => ul.append(buildCard(document, row)));
+  const ul = document.createElement('ul');
+
+  // Category filter bar (client-side): buttons re-render the grid by activity.
+  if (filters.length) {
+    const bar = document.createElement('div');
+    bar.className = 'cards-article-filters';
+    bar.setAttribute('role', 'tablist');
+    filters.forEach((label, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'cards-article-filter';
+      btn.textContent = label;
+      btn.setAttribute('role', 'tab');
+      btn.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+      btn.addEventListener('click', () => {
+        bar.querySelectorAll('.cards-article-filter').forEach((b) => b.setAttribute('aria-selected', 'false'));
+        btn.setAttribute('aria-selected', 'true');
+        renderCards(ul, items, label, limit);
+      });
+      bar.append(btn);
+    });
+    block.append(bar);
+    block.append(ul);
+    renderCards(ul, items, filters[0], limit);
+    return;
+  }
+
+  block.append(ul);
+  renderCards(ul, items, '', limit);
 }
 
 function decorateStatic(block) {
@@ -116,23 +180,8 @@ function decorateStatic(block) {
 
   // Source wraps each card photo in a link to the same destination as the
   // title. Mirror that (skip the contributors variant, whose cards aren't
-  // linked). Only wrap when the card body has a title link to point at.
-  if (!block.classList.contains('contributors')) {
-    ul.querySelectorAll('li').forEach((li) => {
-      const imageDiv = li.querySelector('.cards-article-card-image');
-      const pic = imageDiv && imageDiv.querySelector('picture');
-      const titleLink = li.querySelector('.cards-article-card-body h3 a[href]');
-      if (pic && titleLink && !imageDiv.querySelector('a')) {
-        const a = document.createElement('a');
-        a.href = titleLink.getAttribute('href');
-        a.setAttribute('aria-hidden', 'true');
-        a.setAttribute('tabindex', '-1');
-        a.className = 'cards-article-card-image-link';
-        pic.replaceWith(a);
-        a.append(pic);
-      }
-    });
-  }
+  // linked).
+  if (!block.classList.contains('contributors')) linkCardImages(ul);
 
   block.textContent = '';
   block.append(ul);

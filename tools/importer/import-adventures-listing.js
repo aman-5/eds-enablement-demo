@@ -4,6 +4,7 @@ import columnsIntroParser from './parsers/wknd-columns-intro.js';
 import cardsArticleParser from './parsers/wknd-cards-article.js';
 import heroOverlayParser from './parsers/wknd-hero-overlay.js';
 import cleanupTransformer from './transformers/wknd-cleanup.js';
+import adventuresFilterTransformer from './transformers/wknd-adventures-filter.js';
 
 const parsers = {
   'columns-intro': columnsIntroParser,
@@ -54,6 +55,9 @@ export default {
       if (parser) { try { parser(block.element, { document, url, params }); } catch (e) { console.error(`parse ${block.name}`, e); } }
     });
     cleanupTransformer('afterTransform', main, ep);
+    // Replace the static adventures grid with a category-filter tabs block whose
+    // panels are index-driven cards-article (dynamic) filtered by activity.
+    try { adventuresFilterTransformer('afterTransform', main, ep); } catch (e) { console.error('adventures filter failed:', e); }
     const hr = document.createElement('hr'); main.appendChild(hr);
     WebImporter.rules.createMetadata(main, document);
     WebImporter.rules.transformBackgroundImages(main, document);

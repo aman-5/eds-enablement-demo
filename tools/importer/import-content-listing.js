@@ -9,6 +9,7 @@ import aboutCardsParser from './parsers/wknd-about-cards.js';
 // TRANSFORMER IMPORTS
 import cleanupTransformer from './transformers/wknd-cleanup.js';
 import sectionsTransformer from './transformers/wknd-trendsetters-sections.js';
+import dynamicListingsTransformer from './transformers/wknd-dynamic-listings.js';
 
 const parsers = {
   'columns-intro': columnsIntroParser,
@@ -25,11 +26,17 @@ const PAGE_TEMPLATE = {
     { name: 'cards-article', instances: ['ul.cmp-image-list'] },
   ],
   sections: [],
+  // Magazine "All Articles" grid → dynamic (index-driven). About-us contributor
+  // grids never match (contributors variant is excluded by the transformer).
+  dynamicListings: [
+    { match: /all articles/i, name: 'Cards Article (dynamic)', config: { source: '/us/en/magazine/', limit: 'all' } },
+  ],
 };
 
 const transformers = [
   cleanupTransformer,
   ...(PAGE_TEMPLATE.sections && PAGE_TEMPLATE.sections.length > 1 ? [sectionsTransformer] : []),
+  dynamicListingsTransformer,
 ];
 
 function executeTransformers(hookName, element, payload) {
