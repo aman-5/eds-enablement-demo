@@ -1,0 +1,20 @@
+{
+  "total": 3,
+  "offset": 0,
+  "limit": 3,
+  "data": [
+    {
+      "Source": "/us/en/adventures/nz-climbing",
+      "Destination": "/us/en/adventures/climbing-new-zealand"
+    },
+    {
+      "Source": "/us/en/magazine/norway-surfing",
+      "Destination": "/us/en/magazine/arctic-surfing"
+    },
+    {
+      "Source": "/adventures",
+      "Destination": "/us/en/adventures"
+    }
+  ],
+  ":type": "sheet"
+}

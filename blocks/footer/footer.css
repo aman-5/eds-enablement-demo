@@ -5,7 +5,7 @@
 /* stylelint-disable no-descending-specificity */
 footer {
   background-color: var(--dark-color);
-  color: #ebebeb;
+  color: var(--light-color);
   font-family: var(--body-font-family);
 }
 
@@ -16,7 +16,7 @@ footer .footer-inner {
 }
 
 footer a {
-  color: #ebebeb;
+  color: var(--light-color);
   text-decoration: none;
 }
 
@@ -28,7 +28,7 @@ footer ul {
 
 footer p {
   margin: 0 0 12px;
-  color: #ebebeb;
+  color: var(--light-color);
 }
 
 /* brand + nav */
@@ -46,7 +46,7 @@ footer .footer-logo a {
   font-size: 28px;
   line-height: 1;
   letter-spacing: 0.02em;
-  color: #fff;
+  color: var(--background-color);
 }
 
 footer .footer-logo img {
@@ -64,7 +64,7 @@ footer .footer-nav ul {
 footer .footer-nav a {
   display: inline-block;
   padding: 8px 4px;
-  color: #ebebeb;
+  color: var(--light-color);
   font-size: 14px;
   text-transform: uppercase;
 }
@@ -85,7 +85,7 @@ footer .footer-social {
 
 footer .footer-social h4 {
   margin: 0;
-  color: #ebebeb;
+  color: var(--light-color);
   font-family: var(--body-font-family);
   font-weight: 700;
   font-size: 16px;
@@ -104,7 +104,7 @@ footer .footer-social-list a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #ebebeb;
+  color: var(--light-color);
   font-size: 14px;
   text-transform: uppercase;
   transition: color 0.2s, opacity 0.2s;
@@ -120,7 +120,7 @@ footer .footer-social-list a:has(img),
 footer .footer-social-list a:has(picture) {
   width: 48px;
   height: 48px;
-  background-color: #ebebeb;
+  background-color: var(--light-color);
   color: var(--dark-color);
 }
 
@@ -141,15 +141,15 @@ footer .footer-legal {
   padding-top: 16px;
   font-size: 12px;
   line-height: 1.6;
-  color: #f7f7f7;
+  color: var(--lighter-color);
 }
 
 footer .footer-legal p {
-  color: #f7f7f7;
+  color: var(--lighter-color);
 }
 
 footer .footer-legal a {
-  color: #f7f7f7;
+  color: var(--lighter-color);
   text-decoration: underline;
 }
 

@@ -235,11 +235,35 @@ var CustomImportScript = (() => {
     console.log(`Found ${pageBlocks.length} block instances on page`);
     return pageBlocks;
   }
+  var ACTIVITY_CATEGORY = {
+    "rock climbing": "Climbing",
+    climbing: "Climbing",
+    cycling: "Cycling",
+    skiing: "Skiing",
+    surfing: "Surfing"
+  };
+  function deriveActivityCategory(document) {
+    const els = Array.from(document.querySelectorAll(".cmp-contentfragment__element"));
+    const activityEl = els.find((el) => {
+      const t = el.querySelector(".cmp-contentfragment__element-title, dt");
+      return t && /^activity$/i.test((t.textContent || "").trim());
+    });
+    const raw = activityEl ? (activityEl.querySelector(".cmp-contentfragment__element-value, dd") || {}).textContent : "";
+    const key = (raw || "").trim().toLowerCase();
+    return ACTIVITY_CATEGORY[key] || "Travel";
+  }
   var import_adventure_detail_default = {
     transform: (payload) => {
       const { document, url, params } = payload;
       const main = document.body;
       const ep = __spreadProps(__spreadValues({}, payload), { template: PAGE_TEMPLATE });
+      const activityCategory = deriveActivityCategory(document);
+      if (activityCategory) {
+        const m = document.createElement("meta");
+        m.setAttribute("name", "activity");
+        m.setAttribute("content", activityCategory);
+        (document.head || document.body).appendChild(m);
+      }
       try {
         parse3(main, { document, url, params });
       } catch (e) {
@@ -287,9 +311,50 @@ var CustomImportScript = (() => {
       } catch (e) {
         console.error("section layout failed:", e);
       }
+      try {
+        const currentPath = new URL(params.originalURL).pathname.replace(/\.html?$/, "").replace(/\/$/, "");
+        const relBreak = document.createElement("hr");
+        main.appendChild(relBreak);
+        const relHeading = document.createElement("h2");
+        relHeading.textContent = "More Adventures";
+        main.appendChild(relHeading);
+        const related = WebImporter.Blocks.createBlock(document, {
+          name: "Cards Article (dynamic)",
+          cells: [
+            ["source", "/us/en/adventures/"],
+            ["activity", activityCategory],
+            ["exclude", currentPath],
+            ["limit", "3"]
+          ]
+        });
+        main.appendChild(related);
+      } catch (e) {
+        console.error("related rail failed:", e);
+      }
       const hr = document.createElement("hr");
       main.appendChild(hr);
       WebImporter.rules.createMetadata(main, document);
+      try {
+        if (activityCategory) {
+          const table = Array.from(main.querySelectorAll("table")).find((t) => {
+            const h = t.querySelector("tr");
+            return h && /^metadata$/i.test((h.textContent || "").trim());
+          });
+          if (table) {
+            const tr = document.createElement("tr");
+            const td1 = document.createElement("td");
+            td1.textContent = "activity";
+            const td2 = document.createElement("td");
+            td2.textContent = activityCategory;
+            tr.append(td1, td2);
+            (table.querySelector("tbody") || table).append(tr);
+          } else {
+            console.warn("[activity] metadata table not found");
+          }
+        }
+      } catch (e) {
+        console.error("activity row failed:", e);
+      }
       WebImporter.rules.transformBackgroundImages(main, document);
       WebImporter.rules.adjustImageUrls(main, url, params.originalURL);
       const rawPath = new URL(params.originalURL).pathname.replace(/\/$/, "").replace(/\.html?$/, "");

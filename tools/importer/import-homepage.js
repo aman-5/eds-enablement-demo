@@ -10,6 +10,7 @@ import heroOverlayParser from './parsers/wknd-hero-overlay.js';
 // TRANSFORMER IMPORTS
 import cleanupTransformer from './transformers/wknd-cleanup.js';
 import sectionsTransformer from './transformers/wknd-trendsetters-sections.js';
+import dynamicListingsTransformer from './transformers/wknd-dynamic-listings.js';
 
 // PARSER REGISTRY
 const parsers = {
@@ -34,11 +35,17 @@ const PAGE_TEMPLATE = {
     { id: 'rc1', name: 'hero', selector: ['.carousel.cmp-carousel--hero'], style: null, blocks: ['carousel-hero'], defaultContent: [] },
     { id: 'rc2', name: 'featured', selector: ['.teaser.cmp-teaser--featured'], style: 'light', blocks: ['columns-intro'], defaultContent: [] },
   ],
+  // Convert the two static card rails into the dynamic (index-driven) variant.
+  dynamicListings: [
+    { match: /recent articles/i, name: 'Cards Article (dynamic)', config: { source: '/us/en/magazine/', limit: '4' } },
+    { match: /where do you want to go/i, name: 'Cards Article (dynamic)', config: { source: '/us/en/adventures/', limit: '4' } },
+  ],
 };
 
 const transformers = [
   cleanupTransformer,
   ...(PAGE_TEMPLATE.sections && PAGE_TEMPLATE.sections.length > 1 ? [sectionsTransformer] : []),
+  dynamicListingsTransformer,
 ];
 
 function executeTransformers(hookName, element, payload) {

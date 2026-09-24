@@ -42,7 +42,7 @@ var CustomImportScript = (() => {
   });
 
   // parsers/wknd-columns-intro.js
-  function parse(element, { document }) {
+  function parse(element, { document: document2 }) {
     const teaser = element.querySelector(".cmp-teaser") || element;
     const img = teaser.querySelector("img");
     const pretitle = teaser.querySelector(".cmp-teaser__pretitle");
@@ -51,38 +51,38 @@ var CustomImportScript = (() => {
     const cta = teaser.querySelector(".cmp-teaser__action-link, .cmp-button");
     const textCell = [];
     if (pretitle) {
-      const p = document.createElement("p");
+      const p = document2.createElement("p");
       p.innerHTML = `<strong>${pretitle.textContent.trim()}</strong>`;
       textCell.push(p);
     }
     if (title) {
-      const h = document.createElement("h2");
+      const h = document2.createElement("h2");
       h.textContent = title.textContent.trim();
       textCell.push(h);
     }
     if (desc) {
-      const p = document.createElement("p");
+      const p = document2.createElement("p");
       p.textContent = desc.textContent.trim();
       textCell.push(p);
     }
     if (cta) {
-      const a = document.createElement("a");
+      const a = document2.createElement("a");
       a.href = cta.getAttribute("href") || "#";
       a.textContent = cta.textContent.trim();
       textCell.push(a);
     }
-    const imageCell = img || document.createTextNode("");
+    const imageCell = img || document2.createTextNode("");
     if (!textCell.length && !img) {
       element.replaceWith(...element.childNodes);
       return;
     }
-    const cells = [[textCell.length ? textCell : document.createTextNode(""), imageCell]];
-    const block = WebImporter.Blocks.createBlock(document, { name: "columns-intro", cells });
+    const cells = [[textCell.length ? textCell : document2.createTextNode(""), imageCell]];
+    const block = WebImporter.Blocks.createBlock(document2, { name: "columns-intro", cells });
     element.replaceWith(block);
   }
 
   // parsers/wknd-cards-article.js
-  function parse2(element, { document }) {
+  function parse2(element, { document: document2 }) {
     const items = Array.from(element.querySelectorAll(".cmp-image-list__item"));
     const cells = [];
     items.forEach((item) => {
@@ -91,16 +91,16 @@ var CustomImportScript = (() => {
       const titleText = item.querySelector(".cmp-image-list__item-title");
       const desc = item.querySelector(".cmp-image-list__item-description");
       const href = titleLink && titleLink.getAttribute("href") || item.querySelector("a") && item.querySelector("a").getAttribute("href") || "#";
-      const imageCell = img || document.createTextNode("");
+      const imageCell = img || document2.createTextNode("");
       const body = [];
-      const h = document.createElement("h3");
-      const a = document.createElement("a");
+      const h = document2.createElement("h3");
+      const a = document2.createElement("a");
       a.href = href;
       a.textContent = (titleText || titleLink || { textContent: "" }).textContent.trim();
       h.append(a);
       body.push(h);
       if (desc && desc.textContent.trim()) {
-        const p = document.createElement("p");
+        const p = document2.createElement("p");
         p.textContent = desc.textContent.trim();
         body.push(p);
       }
@@ -110,32 +110,32 @@ var CustomImportScript = (() => {
       element.replaceWith(...element.childNodes);
       return;
     }
-    const block = WebImporter.Blocks.createBlock(document, { name: "cards-article", cells });
+    const block = WebImporter.Blocks.createBlock(document2, { name: "cards-article", cells });
     element.replaceWith(block);
   }
 
   // parsers/wknd-hero-overlay.js
-  function parse3(element, { document }) {
+  function parse3(element, { document: document2 }) {
     const teaser = element.querySelector(".cmp-teaser") || element;
     const img = teaser.querySelector("img");
     const title = teaser.querySelector(".cmp-teaser__title");
     const desc = teaser.querySelector(".cmp-teaser__description");
     const cta = teaser.querySelector(".cmp-teaser__action-link, .cmp-button");
     const cells = [];
-    cells.push([img || document.createTextNode("")]);
+    cells.push([img || document2.createTextNode("")]);
     const content = [];
     if (title) {
-      const h = document.createElement("h2");
+      const h = document2.createElement("h2");
       h.textContent = title.textContent.trim();
       content.push(h);
     }
     if (desc) {
-      const p = document.createElement("p");
+      const p = document2.createElement("p");
       p.textContent = desc.textContent.trim();
       content.push(p);
     }
     if (cta) {
-      const a = document.createElement("a");
+      const a = document2.createElement("a");
       a.href = cta.getAttribute("href") || "#";
       a.textContent = cta.textContent.trim();
       content.push(a);
@@ -144,8 +144,8 @@ var CustomImportScript = (() => {
       element.replaceWith(...element.childNodes);
       return;
     }
-    cells.push([content.length ? content : document.createTextNode("")]);
-    const block = WebImporter.Blocks.createBlock(document, { name: "hero-overlay", cells });
+    cells.push([content.length ? content : document2.createTextNode("")]);
+    const block = WebImporter.Blocks.createBlock(document2, { name: "hero-overlay", cells });
     element.replaceWith(block);
   }
 
@@ -207,6 +207,26 @@ var CustomImportScript = (() => {
     }
   }
 
+  // transformers/wknd-adventures-filter.js
+  function transform2(hookName, element, payload) {
+    if (hookName !== "afterTransform") return;
+    const cardsTable = Array.from(element.querySelectorAll("table")).find((t) => {
+      const head = t.querySelector("tr");
+      const label = (head && head.textContent || "").trim();
+      return /^cards[\s-]*article\b/i.test(label) && !/contributor|dynamic/i.test(label);
+    });
+    if (!cardsTable) return;
+    const dyn = WebImporter.Blocks.createBlock(document, {
+      name: "Cards Article (dynamic)",
+      cells: [
+        ["source", "/us/en/adventures/"],
+        ["limit", "all"],
+        ["filters", "All, Climbing, Cycling, Skiing, Surfing, Travel"]
+      ]
+    });
+    cardsTable.replaceWith(dyn);
+  }
+
   // import-adventures-listing.js
   var parsers = {
     "columns-intro": parse,
@@ -224,10 +244,10 @@ var CustomImportScript = (() => {
     ],
     sections: []
   };
-  function findBlocksOnPage(document, template) {
+  function findBlocksOnPage(document2, template) {
     const pageBlocks = [];
     template.blocks.forEach((b) => b.instances.forEach((sel) => {
-      let els = [...document.querySelectorAll(sel)];
+      let els = [...document2.querySelectorAll(sel)];
       if (b.name === "cards-article") {
         els.slice(1).forEach((extra) => extra.remove());
         els = els.slice(0, 1);
@@ -239,31 +259,36 @@ var CustomImportScript = (() => {
   }
   var import_adventures_listing_default = {
     transform: (payload) => {
-      const { document, url, params } = payload;
-      const main = document.body;
+      const { document: document2, url, params } = payload;
+      const main = document2.body;
       const ep = __spreadProps(__spreadValues({}, payload), { template: PAGE_TEMPLATE });
       transform("beforeTransform", main, ep);
-      const pageBlocks = findBlocksOnPage(document, PAGE_TEMPLATE);
+      const pageBlocks = findBlocksOnPage(document2, PAGE_TEMPLATE);
       pageBlocks.forEach((block) => {
         if (!block.element.parentNode) return;
         const parser = parsers[block.name];
         if (parser) {
           try {
-            parser(block.element, { document, url, params });
+            parser(block.element, { document: document2, url, params });
           } catch (e) {
             console.error(`parse ${block.name}`, e);
           }
         }
       });
       transform("afterTransform", main, ep);
-      const hr = document.createElement("hr");
+      try {
+        transform2("afterTransform", main, ep);
+      } catch (e) {
+        console.error("adventures filter failed:", e);
+      }
+      const hr = document2.createElement("hr");
       main.appendChild(hr);
-      WebImporter.rules.createMetadata(main, document);
-      WebImporter.rules.transformBackgroundImages(main, document);
+      WebImporter.rules.createMetadata(main, document2);
+      WebImporter.rules.transformBackgroundImages(main, document2);
       WebImporter.rules.adjustImageUrls(main, url, params.originalURL);
       const rawPath = new URL(params.originalURL).pathname.replace(/\/$/, "").replace(/\.html?$/, "");
       const path = WebImporter.FileUtils.sanitizePath(rawPath === "" ? "/index" : rawPath);
-      return [{ element: main, path, report: { title: document.title, template: PAGE_TEMPLATE.name, blocks: pageBlocks.map((b) => b.name) } }];
+      return [{ element: main, path, report: { title: document2.title, template: PAGE_TEMPLATE.name, blocks: pageBlocks.map((b) => b.name) } }];
     }
   };
   return __toCommonJS(import_adventures_listing_exports);

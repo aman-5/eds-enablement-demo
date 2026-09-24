@@ -130,7 +130,7 @@
   transform: translateX(-50%);
   width: 20px;
   height: 20px;
-  border: 3px solid #fff;
+  border: 3px solid var(--background-color);
   border-bottom: 0;
   border-radius: 12px 12px 0 0;
 }
@@ -144,5 +144,5 @@
   width: 34px;
   height: 26px;
   border-radius: 4px;
-  background: #fff;
+  background: var(--background-color);
 }
